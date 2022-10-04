@@ -9,7 +9,7 @@ function Layout() {
       <main className="mt-14 flex-grow">
         <Outlet />
       </main>
-      <footer className="text-center text-lg bg-slate-600 ">
+      <footer className="text-center text-lg bg-slate-600 mt-4 ">
         <span>2022</span>
       </footer>
     </div>

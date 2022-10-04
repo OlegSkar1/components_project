@@ -25,22 +25,29 @@ export default class Product extends Component<ProductProps, ProductState> {
 
   render() {
     const { product } = this.props;
+    const { details } = this.state;
+
+    const btnBgClasses = details ? "bg-yellow-500" : "bg-blue-500";
+    const btnClasses = ["py-2 px-4 border rounded", btnBgClasses];
+
     return (
-      <div className="max-w-[300px] border py-2 px-4 rounded flex flex-col items-center text-center">
+      <div className="flex flex-col items-center text-center justify-between p-6 max-w-[280px] bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
         <img src={product.image} className="w-1/2" alt={product.title} />
 
         <p>{product.title}</p>
 
-        <span className="font-bold">{product.price}</span>
+        <span className="font-bold">{product.price}$</span>
 
-        <button
-          className="py-2 px-4 border bg-yellow-500 rounded"
-          onClick={this.clickHandler}
-        >
-          Show details
+        <button className={btnClasses.join(" ")} onClick={this.clickHandler}>
+          {details ? "Hide details" : "Show details"}
         </button>
 
-        {this.state.details && <div>{product.description}</div>}
+        {this.state.details && (
+          <>
+            <div className="py-2 text-justify">{product.description}</div>
+            <span>{product.rating.rate}</span>
+          </>
+        )}
       </div>
     );
   }
