@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import Product from "./Product";
 import SearchBar from "./SearchBar";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { IProduct } from "models";
 
 interface productsState {
   products: IProduct[];
   loading: boolean;
+  error: string;
   search?: string;
 }
 
@@ -14,15 +15,23 @@ export default class Home extends Component {
   state: productsState = {
     products: [],
     loading: false,
+    error: "",
   };
 
   fetchProducts = async () => {
-    this.setState({ loading: true });
-    const response = await axios.get<IProduct[]>(
-      "https://fakestoreapi.com/products"
-    );
-    this.setState({ products: response.data });
-    this.setState({ loading: false });
+    try {
+      this.setState({ error: "" });
+      this.setState({ loading: true });
+      const response = await axios.get<IProduct[]>(
+        "https://fakestoreapi.com/products"
+      );
+      this.setState({ products: response.data });
+      this.setState({ loading: false });
+    } catch (error: unknown) {
+      this.setState({ loading: false });
+      const e = error as AxiosError;
+      this.setState({ error: e.message });
+    }
   };
 
   updateData = (value: string) => {
@@ -34,7 +43,7 @@ export default class Home extends Component {
   }
 
   render() {
-    const { products, loading, search } = this.state;
+    const { products, loading, search, error } = this.state;
 
     const filteredProducts = products.filter((product) => {
       if (search && search.length > 1) {
@@ -65,6 +74,9 @@ export default class Home extends Component {
               <span className="sr-only">Loading...</span>
             </div>
           </div>
+        )}
+        {error && (
+          <p className="text-center mt-10 text-red-600 text-lg">{error}</p>
         )}
         <div className="flex flex-grow flex-wrap items-stretch justify-center mt-10 gap-4">
           {filteredProducts.map((product) => (
