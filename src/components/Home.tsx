@@ -7,6 +7,7 @@ import { IProduct } from "models";
 interface productsState {
   products: IProduct[];
   loading: boolean;
+  search?: string;
 }
 
 export default class Home extends Component {
@@ -24,15 +25,25 @@ export default class Home extends Component {
     this.setState({ loading: false });
   };
 
+  updateData = (value: string) => {
+    this.setState({ search: value });
+  };
+
   componentDidMount(): void {
     this.fetchProducts();
   }
 
   render() {
-    const { products, loading } = this.state;
+    const { products, loading, search } = this.state;
+
+    const filteredProducts = products.filter((product) => {
+      if (search && search.length > 1) {
+        return product.title.toLowerCase().includes(search.toLowerCase());
+      } else return product;
+    });
     return (
       <>
-        <SearchBar />
+        <SearchBar updateData={this.updateData} />
         {loading && (
           <div className="text-center">
             <div role="status">
@@ -56,7 +67,7 @@ export default class Home extends Component {
           </div>
         )}
         <div className="flex flex-grow flex-wrap items-stretch justify-center mt-10 gap-4">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <Product product={product} key={product.id} />
           ))}
         </div>

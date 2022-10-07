@@ -1,16 +1,42 @@
 import React, { Component } from "react";
 
-export default class SearchBar extends Component {
-  state = {
-    search: "",
-  };
+interface SearchBarProps {
+  updateData: (value: string) => void;
+}
+
+interface SearchBarState {
+  search: string;
+}
+
+export default class SearchBar extends Component<
+  SearchBarProps,
+  SearchBarState
+> {
+  constructor(props: SearchBarProps) {
+    super(props);
+    this.state = {
+      search: "",
+    };
+  }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ search: event.target.value });
   };
 
   componentDidMount(): void {
-    this.setState({ search: localStorage.getItem("search") });
+    const storage = localStorage.getItem("search");
+    if (storage) {
+      this.setState({ search: storage });
+    }
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<SearchBarProps>,
+    prevState: Readonly<SearchBarState>
+  ): void {
+    if (this.state.search !== prevState.search) {
+      this.props.updateData(this.state.search);
+    }
   }
 
   componentWillUnmount(): void {
@@ -19,6 +45,8 @@ export default class SearchBar extends Component {
 
   render() {
     const { search } = this.state;
+    // this.props.updateData(this.state.search);
+    // console.log(this.state.search);
 
     return (
       <form className="flex items-center justify-center mt-5" action="#">
