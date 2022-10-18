@@ -44,6 +44,7 @@ export default class Home extends Component {
 
   render() {
     const { products, loading, search, error } = this.state;
+    console.log(search);
 
     const filteredProducts = products.filter((product) => {
       if (search && search.length > 1) {

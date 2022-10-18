@@ -45,8 +45,6 @@ export default class SearchBar extends Component<
 
   render() {
     const { search } = this.state;
-    // this.props.updateData(this.state.search);
-    // console.log(this.state.search);
 
     return (
       <form className="flex items-center justify-center mt-5" action="#">
