@@ -1,24 +1,19 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import SearchBar from "../components/SearchBar.tsx";
+import SearchBar from "../components/SearchBar";
 
 const updateData = jest.fn();
 
 describe("SearchBar", () => {
   beforeEach(() => {
-    Object.defineProperty(window, "localStorage", {
-      value: {
-        getItem: jest.fn(() => null),
-        setItem: jest.fn(() => null),
-      },
-      writable: true,
-    });
+    localStorage.clear();
+    jest.clearAllMocks();
   });
 
   it("Should call localStorage getItem on render", () => {
-    render(<SearchBar />);
-    expect(window.localStorage.getItem).toHaveBeenCalledTimes(1);
+    render(<SearchBar updateData={updateData} />);
+    expect(localStorage.getItem).toHaveBeenCalledTimes(1);
   });
   it("Should call localStorage setItem on unmount", () => {
     const { getByPlaceholderText, unmount } = render(

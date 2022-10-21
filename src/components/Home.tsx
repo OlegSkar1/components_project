@@ -52,7 +52,7 @@ export default class Home extends Component {
       } else return product;
     });
     return (
-      <>
+      <div data-testid="Home-page">
         <SearchBar updateData={this.updateData} />
         {loading && (
           <div className="text-center">
@@ -84,7 +84,7 @@ export default class Home extends Component {
             <Product product={product} key={product.id} />
           ))}
         </div>
-      </>
+      </div>
     );
   }
 }

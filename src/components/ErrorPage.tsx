@@ -3,7 +3,10 @@ import React, { Component } from "react";
 export default class ErrorPage extends Component {
   render() {
     return (
-      <div className="h-screen flex justify-center items-center bg-amber-200">
+      <div
+        data-testid="ErrorPage"
+        className="h-screen flex justify-center items-center bg-amber-200"
+      >
         <div className="text-lg">
           404 - Page not found, go to{" "}
           <a
