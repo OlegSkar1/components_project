@@ -44,7 +44,6 @@ export default class Home extends Component {
 
   render() {
     const { products, loading, search, error } = this.state;
-    console.log(search);
 
     const filteredProducts = products.filter((product) => {
       if (search && search.length > 1) {
@@ -55,7 +54,7 @@ export default class Home extends Component {
       <div data-testid="Home-page">
         <SearchBar updateData={this.updateData} />
         {loading && (
-          <div className="text-center">
+          <div data-testid="loading" className="text-center">
             <div role="status">
               <svg
                 className="mt-10 inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -77,7 +76,12 @@ export default class Home extends Component {
           </div>
         )}
         {error && (
-          <p className="text-center mt-10 text-red-600 text-lg">{error}</p>
+          <p
+            data-testid="error"
+            className="text-center mt-10 text-red-600 text-lg"
+          >
+            {error}
+          </p>
         )}
         <div className="flex flex-grow flex-wrap items-stretch justify-center mt-10 gap-4">
           {filteredProducts.map((product) => (
