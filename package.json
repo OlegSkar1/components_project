@@ -25,7 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -35,7 +35,11 @@
     ]
   },
   "jest": {
-    "resetMocks": false
+    "resetMocks": false,
+    "collectCoverageFrom": [
+      "src/components/*.tsx",
+      "src/AppRouter.tsx"
+    ]
   },
   "browserslist": {
     "production": [
