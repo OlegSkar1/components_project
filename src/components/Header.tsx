@@ -20,6 +20,13 @@ export default class Header extends Component {
           >
             About
           </Link>
+          <Link
+            data-testid="form-link"
+            className="text-xl rounded drop-shadow transition hover:bg-sky-500 bg-teal-600 px-2"
+            to="/form"
+          >
+            Create
+          </Link>
         </nav>
       </header>
     );
