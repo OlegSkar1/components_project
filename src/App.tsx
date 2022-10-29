@@ -1,8 +1,15 @@
-import React from "react";
+import React, { Component } from "react";
 import AppRouter from "AppRouter";
+import { ContextState } from "./context";
 
-function App() {
-  return <AppRouter />;
+class App extends Component {
+  render() {
+    return (
+      <ContextState>
+        <AppRouter />
+      </ContextState>
+    );
+  }
 }
 
 export default App;

@@ -48,7 +48,7 @@ export default class Product extends Component<ProductProps, ProductState> {
         {this.state.details && (
           <>
             <div className="py-2 text-justify">{product.description}</div>
-            <span>{product.rating.rate}</span>
+            <span>{product.rating?.rate}</span>
           </>
         )}
       </div>
