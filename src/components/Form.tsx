@@ -5,9 +5,9 @@ const fileReader = new FileReader();
 
 const buttonStyles = {
   disabled:
-    'text-white bg-blue-400 dark:bg-blue-500 cursor-not-allowed font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2" disabled',
+    'text-white bg-blue-400 dark:bg-blue-500 cursor-not-allowed font-medium rounded-lg text-sm px-5 py-2.5 text-center" disabled',
   active:
-    "text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2",
+    "text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center",
 };
 
 const textareaInputStyles = {
@@ -37,6 +37,7 @@ export default class Form extends Component<unknown, IFormState> {
   price = createRef<HTMLInputElement>();
   description = createRef<HTMLTextAreaElement>();
   image = createRef<HTMLInputElement>();
+  submit = createRef<HTMLInputElement>();
   form = createRef<HTMLFormElement>();
 
   state = {
@@ -45,7 +46,9 @@ export default class Form extends Component<unknown, IFormState> {
     isDescError: false,
   };
 
-  handleSubmit: React.FormEventHandler<HTMLFormElement> = (e): void => {
+  handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    this.setState({ isActive: false });
     const { addProduct } = this.context as ContextInterface;
 
     const title = this.title.current;
@@ -55,23 +58,18 @@ export default class Form extends Component<unknown, IFormState> {
     const category = this.category.current;
     const id = Date.now();
     if (!title?.value) {
-      e.preventDefault();
       title!.required = true;
     }
     if (!category?.value) {
-      e.preventDefault();
       category!.required = true;
     }
     if (!price?.value) {
-      e.preventDefault();
       price!.required = true;
     }
     if (!description?.value) {
-      e.preventDefault();
       this.setState({ isDescError: true });
     }
     if (!image?.files?.item(0)) {
-      e.preventDefault();
       this.setState({ isError: true });
     }
 
@@ -82,16 +80,21 @@ export default class Form extends Component<unknown, IFormState> {
       price?.validity.valid &&
       category?.validity.valid
     ) {
-      console.log("submit");
-      fileReader.onloadend = () => {
+      fileReader.onloadend = async () => {
         addProduct({
           id,
           title: title!.value,
           category: category.value,
           description: description.value,
-          price: Number(price),
+          price: Number(price.value),
           image: fileReader.result as string,
         });
+
+        title.required = false;
+        category.required = false;
+        price.required = false;
+
+        this.form.current?.reset();
       };
       fileReader.readAsDataURL(image?.files?.item(0) as File);
     }
@@ -138,7 +141,7 @@ export default class Form extends Component<unknown, IFormState> {
         {
           if (event.value.length > 2) {
             event.required = true;
-            event.pattern = "^[A-Za-zА-Яа-яЁё0-9]{3,16}$";
+            event.pattern = "^[A-Za-zА-Яа-яЁё0-9s]{3,16}$";
           }
         }
         break;
@@ -269,6 +272,7 @@ export default class Form extends Component<unknown, IFormState> {
 
           <input
             type="submit"
+            name="submit"
             className={isActive ? active : disabled}
             value="Добавить"
             disabled={isActive ? false : true}
