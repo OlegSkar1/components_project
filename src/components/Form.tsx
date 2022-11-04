@@ -1,5 +1,6 @@
 import React, { Component, createRef } from "react";
 import { Context, ContextInterface } from "../context";
+import SuccessAlert from "./SuccessAlert";
 
 const fileReader = new FileReader();
 
@@ -28,6 +29,7 @@ interface IFormState {
   isActive: boolean;
   isError: boolean;
   isDescError: boolean;
+  isUploaded: boolean;
 }
 export default class Form extends Component<unknown, IFormState> {
   static contextType = Context;
@@ -44,11 +46,12 @@ export default class Form extends Component<unknown, IFormState> {
     isActive: false,
     isError: false,
     isDescError: false,
+    isUploaded: false,
   };
 
   handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    this.setState({ isActive: false });
+    this.setState({ isActive: false, isUploaded: false });
     const { addProduct } = this.context as ContextInterface;
 
     const title = this.title.current;
@@ -97,6 +100,10 @@ export default class Form extends Component<unknown, IFormState> {
         this.form.current?.reset();
       };
       fileReader.readAsDataURL(image?.files?.item(0) as File);
+      this.setState({ isUploaded: true });
+      setTimeout(() => {
+        this.setState({ isUploaded: false });
+      }, 2500);
     }
   };
 
@@ -174,21 +181,21 @@ export default class Form extends Component<unknown, IFormState> {
   };
 
   render() {
-    const { isActive, isError, isDescError } = this.state;
+    const { isActive, isError, isDescError, isUploaded } = this.state;
     const { active, disabled } = buttonStyles;
     const { normalInput, errorInput } = textareaInputStyles;
     const { normalFileInput, errorFileInput } = fileInputStyles;
 
     return (
-      <>
-        <h1 className="mt-5 text-center text-4xl font-bold dark:text-white">
-          Карточка добавления продукта
+      <div className="w-1/3 m-auto">
+        <h1 className="mt-5 mb-7 text-center text-4xl font-bold dark:text-white">
+          Форма добавления
         </h1>
         <form
           noValidate
           id="form"
           ref={this.form}
-          className="mt-7 w-1/3 m-auto"
+          className="mb-4"
           onSubmit={isActive ? this.handleSubmit : (e) => e.preventDefault()}
           onBlur={this.handleBlur}
           onChange={this.handleChange}
@@ -276,9 +283,11 @@ export default class Form extends Component<unknown, IFormState> {
             className={isActive ? active : disabled}
             value="Добавить"
             disabled={isActive ? false : true}
+            ref={this.submit}
           />
         </form>
-      </>
+        <SuccessAlert isUploaded={isUploaded} />
+      </div>
     );
   }
 }
