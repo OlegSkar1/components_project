@@ -6,7 +6,7 @@ const fileReader = new FileReader();
 
 const buttonStyles = {
   disabled:
-    'text-white bg-blue-400 dark:bg-blue-500 cursor-not-allowed font-medium rounded-lg text-sm px-5 py-2.5 text-center" disabled',
+    "text-white bg-blue-400 dark:bg-blue-500 cursor-not-allowed font-medium rounded-lg text-sm px-5 py-2.5 text-center",
   active:
     "text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center",
 };
@@ -148,7 +148,7 @@ export default class Form extends Component<unknown, IFormState> {
         {
           if (event.value.length > 2) {
             event.required = true;
-            event.pattern = "^[A-Za-zА-Яа-яЁё0-9s]{3,16}$";
+            event.pattern = "^[A-Za-zА-Яа-яЁё0-9s ]{3,16}$";
           }
         }
         break;
@@ -156,7 +156,7 @@ export default class Form extends Component<unknown, IFormState> {
         {
           if (event.value) {
             event.required = true;
-            event.pattern = "^[0-9]{1,8}$";
+            event.pattern = "^[\\d]{1,8}$";
           }
         }
         break;
@@ -174,7 +174,7 @@ export default class Form extends Component<unknown, IFormState> {
         {
           if (event.files[0]) {
             this.setState({ isError: false });
-          }
+          } else this.setState({ isError: true });
         }
         break;
     }
@@ -196,9 +196,10 @@ export default class Form extends Component<unknown, IFormState> {
           id="form"
           ref={this.form}
           className="mb-4"
-          onSubmit={isActive ? this.handleSubmit : (e) => e.preventDefault()}
+          onSubmit={this.handleSubmit}
           onBlur={this.handleBlur}
           onChange={this.handleChange}
+          data-testid="form"
         >
           <div className="relative">
             <input
@@ -206,10 +207,14 @@ export default class Form extends Component<unknown, IFormState> {
               type="text"
               id="title"
               name="productTitle"
+              data-testid="productTitle"
               ref={this.title}
               className="peer mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 invalid:border-pink-500 invalid:text-pink-600"
             />
-            <p className="text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] invisible peer-invalid:visible ">
+            <p
+              data-testid="titleError"
+              className="text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] invisible peer-invalid:visible "
+            >
               <span className="font-medium">Ошибка!</span> Введите 3-16
               символов, кроме специальных
             </p>
@@ -221,10 +226,14 @@ export default class Form extends Component<unknown, IFormState> {
               type="text"
               id="category"
               name="productCategory"
+              data-testid="productCategory"
               ref={this.category}
               className="mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 invalid:border-pink-500 invalid:text-pink-600 peer"
             />
-            <p className="text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] invisible peer-invalid:visible ">
+            <p
+              data-testid="categoryError"
+              className="text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] invisible peer-invalid:visible "
+            >
               <span className="font-medium">Ошибка!</span> Введите 3-16 символов
             </p>
           </div>
@@ -236,9 +245,13 @@ export default class Form extends Component<unknown, IFormState> {
               id="price"
               ref={this.price}
               name="productPrice"
+              data-testid="productPrice"
               className="mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 invalid:border-pink-500 invalid:text-pink-600 peer"
             />
-            <p className="text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] invisible peer-invalid:visible ">
+            <p
+              data-testid="priceError"
+              className="text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] invisible peer-invalid:visible "
+            >
               <span className="font-medium">Ошибка!</span> Введите 1-8 цифр
             </p>
           </div>
@@ -253,9 +266,13 @@ export default class Form extends Component<unknown, IFormState> {
               minLength={8}
               className={isDescError ? errorInput : normalInput}
               placeholder="Введите описание продукта"
+              data-testid="productDescription"
             />
             {isDescError && (
-              <p className="text-sm text-red-600 dark:text-red-500 absolute top-[185px] left-[10px] ">
+              <p
+                data-testid="descError"
+                className="text-sm text-red-600 dark:text-red-500 absolute top-[185px] left-[10px] "
+              >
                 <span className="font-medium">Ошибка!</span> Введите 8-40
                 символов
               </p>
@@ -275,6 +292,7 @@ export default class Form extends Component<unknown, IFormState> {
             accept="image/*"
             name="productImage"
             ref={this.image}
+            data-testid="productImage"
           />
 
           <input
@@ -284,6 +302,7 @@ export default class Form extends Component<unknown, IFormState> {
             value="Добавить"
             disabled={isActive ? false : true}
             ref={this.submit}
+            data-testid="submit"
           />
         </form>
         <SuccessAlert isUploaded={isUploaded} />

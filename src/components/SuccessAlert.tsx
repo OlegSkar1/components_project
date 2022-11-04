@@ -16,7 +16,12 @@ class SuccessAlert extends Component<Props> {
       opacityClass,
     ];
     return (
-      <div id="successAlert" className={alertClasses.join(" ")} role="alert">
+      <div
+        id="successAlert"
+        data-testid="successAlert"
+        className={alertClasses.join(" ")}
+        role="alert"
+      >
         <span className="font-medium">Продукт создан!</span> Перейдите на
         главную страницу для просмотра
       </div>
