@@ -5,7 +5,7 @@ interface SearchBarProps {
 }
 
 interface SearchBarState {
-  search: string;
+  query: string;
 }
 
 export default class SearchBar extends Component<
@@ -15,18 +15,18 @@ export default class SearchBar extends Component<
   constructor(props: SearchBarProps) {
     super(props);
     this.state = {
-      search: "",
+      query: "",
     };
   }
 
   handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ search: event.target.value });
+    this.setState({ query: event.target.value });
   };
 
   componentDidMount(): void {
     const storage = localStorage.getItem("search");
     if (storage) {
-      this.setState({ search: storage });
+      this.setState({ query: storage });
     }
   }
 
@@ -34,17 +34,17 @@ export default class SearchBar extends Component<
     prevProps: Readonly<SearchBarProps>,
     prevState: Readonly<SearchBarState>
   ): void {
-    if (this.state.search !== prevState.search) {
-      this.props.updateData(this.state.search);
+    if (this.state.query !== prevState.query) {
+      this.props.updateData(this.state.query);
     }
   }
 
   componentWillUnmount(): void {
-    localStorage.setItem("search", this.state.search);
+    localStorage.setItem("query", this.state.query);
   }
 
   render() {
-    const { search } = this.state;
+    const { query } = this.state;
 
     return (
       <form className="flex items-center justify-center mt-5" action="#">
@@ -74,7 +74,7 @@ export default class SearchBar extends Component<
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Search"
             onChange={this.handleChange}
-            value={search}
+            value={query}
           />
         </div>
         <button
