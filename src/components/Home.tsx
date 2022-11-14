@@ -1,38 +1,40 @@
 /// reference path="../charactersModule.d.ts" /
 import React, { useState, useEffect } from "react";
-import Product from "./Product";
+import Character from "./Character";
 import SearchBar from "./SearchBar";
+import MyModal from "./MyModal";
 import axios, { AxiosError } from "axios";
 import { IProduct } from "models";
 import Loading from "./Loading";
 import { Context, ContextInterface } from "../context";
+import { ICharacter, ICharacterData } from "charactersModule";
 
 const BASE_URL = "https://rickandmortyapi.com/api/";
 
-interface productsState {
-  products: IProduct[];
-  loading: boolean;
-  error: string;
-  search?: string;
-}
-
 export default function Home() {
-  const [character, setCharacter] = useState<Character.Result[]>([]);
+  const [characters, setCharacters] = useState<ICharacter[]>([]);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [pageQty, setPageQty] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<Character.Character>(
+        setError("");
+        setLoading(true);
+        const response = await axios.get<ICharacterData>(
           BASE_URL + "character"
         );
-        const characterData = response.data.results;
-        setCharacter(characterData);
-      } catch (error) {}
+        setLoading(false);
+        setCharacters(response.data.results);
+      } catch (error) {
+        setLoading(false);
+        const e = error as AxiosError;
+        setError(e.message);
+      }
     };
     fetchData();
   }, [query, page]);
@@ -41,12 +43,12 @@ export default function Home() {
     setQuery(value);
   };
 
-  // const filteredProducts = (data: IProduct[]) =>
-  //   data.filter((product) => {
-  //     if (query && query.length > 1) {
-  //       return product.title.toLowerCase().includes(query.toLowerCase());
-  //     } else return product;
-  //   });
+  const filteredCharacters = (characters: ICharacter[]) =>
+    characters.filter((character) => {
+      if (query && query.length > 1) {
+        return character.name.toLowerCase().includes(query.toLowerCase());
+      } else return character;
+    });
 
   return (
     <div data-testid="Home-page">
@@ -60,17 +62,17 @@ export default function Home() {
           {error}
         </p>
       )}
-      <div className="flex flex-grow flex-wrap items-stretch justify-center mt-10 gap-4">
-        {/* {filteredProducts(products).map((product) => (
-          <Product product={product} key={product.id} />
+      <div className="flex flex-wrap justify-center gap-3 mt-4">
+        {filteredCharacters(characters).map((character) => (
+          <Character character={character} key={character.id} />
         ))}
-        {contextProducts &&
+        {/* {contextProducts &&
           products.length !== 0 &&
-          filteredProducts(contextProducts).map((product) => (
-            <Product product={product} key={product.id} />
+          filteredProducts(contextProducts).map((character) => (
+            <Character character={character} key={product.id} />
           ))} */}
 
-        {character.map((character) => (
+        {/* {characters.map((character) => (
           <div
             className="flex gap-x-2 justify-center items-center"
             key={character.id}
@@ -78,7 +80,7 @@ export default function Home() {
             <div>{character.name}</div>
             <img src={character.image} />
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );
