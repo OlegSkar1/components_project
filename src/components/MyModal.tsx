@@ -13,6 +13,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
     minWidth: 300,
+    minHeight: 350,
+    borderBottom: 0,
   },
 }));
 
@@ -81,6 +83,7 @@ export default function CustomizedDialogs({
           <Typography gutterBottom>status: {status}</Typography>
           <Typography gutterBottom>gender: {gender}</Typography>
           <Typography gutterBottom>species: {species}</Typography>
+          <Typography gutterBottom>location: {location.name}</Typography>
           <Typography gutterBottom>
             <Dropdown episode={episode} />
           </Typography>

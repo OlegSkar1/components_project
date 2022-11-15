@@ -1,5 +1,4 @@
 import { ICharacter } from "charactersModule";
-import { IProduct } from "models";
 import React, { Component } from "react";
 import MyModal from "./MyModal";
 
@@ -37,10 +36,7 @@ export default class Product extends Component<CharacterProps, ProductState> {
 
   render() {
     const { character } = this.props;
-    const { details, open } = this.state;
-
-    const btnBgClasses = details ? "bg-yellow-500" : "bg-blue-500";
-    const btnClasses = ["py-2 px-4 border rounded", btnBgClasses];
+    const { open } = this.state;
 
     return (
       <>

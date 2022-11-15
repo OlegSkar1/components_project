@@ -27,27 +27,29 @@ export default class SearchBar extends Component<
     const storage = localStorage.getItem("search");
     if (storage) {
       this.setState({ query: storage });
-    }
-  }
-
-  componentDidUpdate(
-    prevProps: Readonly<SearchBarProps>,
-    prevState: Readonly<SearchBarState>
-  ): void {
-    if (this.state.query !== prevState.query) {
-      this.props.updateData(this.state.query);
+      this.props.updateData(storage);
     }
   }
 
   componentWillUnmount(): void {
-    localStorage.setItem("query", this.state.query);
+    localStorage.setItem("search", this.state.query);
   }
+
+  submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (this.state.query.length > 2) {
+      this.props.updateData(this.state.query);
+    }
+  };
 
   render() {
     const { query } = this.state;
 
     return (
-      <form className="flex items-center justify-center mt-5" action="#">
+      <form
+        className="flex items-center justify-center mt-5"
+        onSubmit={this.submitHandler}
+      >
         <label htmlFor="simple-search" className="sr-only">
           Search
         </label>

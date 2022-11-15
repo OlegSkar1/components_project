@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 const styles = {
-  open: "absolute left-5 top-56 z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700",
+  open: "absolute top-[245px] w-44 bg-white rounded divide-gray-100 shadow dark:bg-gray-700",
   close:
-    "hidden z-10 w-44 mt-2 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700",
+    "hidden z-10 w-44 bg-white rounded divide-gray-100 shadow dark:bg-gray-700",
 };
 
 interface Props {
@@ -42,7 +42,7 @@ export default function Dropdown({ episode }: Props) {
       </button>
       <div id="dropdown" className={open ? styles.open : styles.close}>
         <ul
-          className="py-1 text-sm text-gray-700 dark:text-gray-200"
+          className="py-2 text-sm text-gray-700 dark:text-gray-200"
           aria-labelledby="dropdownDefault"
         >
           {episode.map((item, index) => {

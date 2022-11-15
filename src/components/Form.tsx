@@ -1,5 +1,6 @@
 import React, { Component, createRef } from "react";
 import { Context, ContextInterface } from "../context";
+import Card from "./Card";
 import SuccessAlert from "./SuccessAlert";
 
 const fileReader = new FileReader();
@@ -186,8 +187,10 @@ export default class Form extends Component<unknown, IFormState> {
     const { normalInput, errorInput } = textareaInputStyles;
     const { normalFileInput, errorFileInput } = fileInputStyles;
 
+    const { products } = this.context as ContextInterface;
+
     return (
-      <div className="w-1/3 m-auto">
+      <div className="container m-auto">
         <h1 className="mt-5 mb-7 text-center text-4xl font-bold dark:text-white">
           Форма добавления
         </h1>
@@ -195,7 +198,7 @@ export default class Form extends Component<unknown, IFormState> {
           noValidate
           id="form"
           ref={this.form}
-          className="mb-4"
+          className="mb-4 w-1/3 m-auto"
           onSubmit={this.handleSubmit}
           onBlur={this.handleBlur}
           onChange={this.handleChange}
@@ -306,6 +309,12 @@ export default class Form extends Component<unknown, IFormState> {
           />
         </form>
         <SuccessAlert isUploaded={isUploaded} />
+        <div className="flex flex-wrap justify-center gap-3 mt-4">
+          {products &&
+            products.map((product) => (
+              <Card key={product.id} product={product} />
+            ))}
+        </div>
       </div>
     );
   }

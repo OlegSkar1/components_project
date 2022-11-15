@@ -1,12 +1,8 @@
-/// reference path="../charactersModule.d.ts" /
 import React, { useState, useEffect } from "react";
 import Character from "./Character";
 import SearchBar from "./SearchBar";
-import MyModal from "./MyModal";
 import axios, { AxiosError } from "axios";
-import { IProduct } from "models";
 import Loading from "./Loading";
-import { Context, ContextInterface } from "../context";
 import { ICharacter, ICharacterData } from "charactersModule";
 
 const BASE_URL = "https://rickandmortyapi.com/api/";
@@ -14,20 +10,23 @@ const BASE_URL = "https://rickandmortyapi.com/api/";
 export default function Home() {
   const [characters, setCharacters] = useState<ICharacter[]>([]);
   const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [pageQty, setPageQty] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      let response;
       try {
         setError("");
         setLoading(true);
-        const response = await axios.get<ICharacterData>(
-          BASE_URL + "character"
-        );
+        if (!query) {
+          response = await axios.get<ICharacterData>(BASE_URL + "character");
+        } else {
+          response = await axios.get<ICharacterData>(
+            `${BASE_URL}character/?name=${query}`
+          );
+        }
+
         setLoading(false);
         setCharacters(response.data.results);
       } catch (error) {
@@ -37,7 +36,7 @@ export default function Home() {
       }
     };
     fetchData();
-  }, [query, page]);
+  }, [query]);
 
   const updateData = (value: string) => {
     setQuery(value);
@@ -66,21 +65,6 @@ export default function Home() {
         {filteredCharacters(characters).map((character) => (
           <Character character={character} key={character.id} />
         ))}
-        {/* {contextProducts &&
-          products.length !== 0 &&
-          filteredProducts(contextProducts).map((character) => (
-            <Character character={character} key={product.id} />
-          ))} */}
-
-        {/* {characters.map((character) => (
-          <div
-            className="flex gap-x-2 justify-center items-center"
-            key={character.id}
-          >
-            <div>{character.name}</div>
-            <img src={character.image} />
-          </div>
-        ))} */}
       </div>
     </div>
   );

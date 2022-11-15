@@ -22,8 +22,7 @@ class SuccessAlert extends Component<Props> {
         className={alertClasses.join(" ")}
         role="alert"
       >
-        <span className="font-medium">Продукт создан!</span> Перейдите на
-        главную страницу для просмотра
+        <span className="font-medium">Продукт создан!</span>
       </div>
     );
   }
