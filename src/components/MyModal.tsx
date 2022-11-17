@@ -82,11 +82,19 @@ export default function CustomizedDialogs({
           {name}
         </BootstrapDialogTitle>
         <DialogContent dividers>
-          <Typography gutterBottom>status: {status}</Typography>
-          <Typography gutterBottom>gender: {gender}</Typography>
-          <Typography gutterBottom>species: {species}</Typography>
-          <Typography gutterBottom>location: {location.name}</Typography>
-          <Typography gutterBottom>
+          <Typography component={"div"} gutterBottom>
+            status: {status}
+          </Typography>
+          <Typography component={"div"} gutterBottom>
+            gender: {gender}
+          </Typography>
+          <Typography component={"div"} gutterBottom>
+            species: {species}
+          </Typography>
+          <Typography component={"div"} gutterBottom>
+            location: {location.name}
+          </Typography>
+          <Typography component={"div"} gutterBottom>
             <Dropdown episode={episode} />
           </Typography>
         </DialogContent>
