@@ -33,6 +33,7 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
       {onClose ? (
         <IconButton
           aria-label="close"
+          data-testid="close-button"
           onClick={onClose}
           sx={{
             position: "absolute",
@@ -72,6 +73,7 @@ export default function CustomizedDialogs({
         aria-labelledby="customized-dialog-title"
         open={modalOpen}
         sx={{ minWidth: 300 }}
+        data-testid="MyModal"
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"

@@ -6,25 +6,17 @@ interface CharacterProps {
   character: ICharacter;
 }
 
-interface ProductState {
-  details: boolean;
+interface CharacterState {
   open: boolean;
 }
 
-export default class Product extends Component<CharacterProps, ProductState> {
+export default class Product extends Component<CharacterProps, CharacterState> {
   constructor(props: CharacterProps) {
     super(props);
     this.state = {
-      details: false,
       open: false,
     };
   }
-
-  clickHandler = () => {
-    this.setState((prev) => ({
-      details: !prev.details,
-    }));
-  };
 
   handleOpen = () => {
     this.setState({ open: true });
@@ -41,7 +33,7 @@ export default class Product extends Component<CharacterProps, ProductState> {
     return (
       <>
         <div
-          data-testid="product-item"
+          data-testid="character-item"
           className="flex flex-col items-center text-center justify-between p-6 max-w-[280px] bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
           onClick={this.handleOpen}
         >
