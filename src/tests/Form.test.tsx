@@ -2,61 +2,7 @@ import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Form from "../components/Form";
-import { IProduct } from "models";
 import { ContextState } from "../context";
-import AppRouter from "AppRouter";
-import { MemoryRouter } from "react-router-dom";
-import axios from "axios";
-
-const MockProducts: IProduct[] = [
-  {
-    id: 1,
-    title: "Hard drive",
-    price: 3000,
-    description: "1tb",
-    category: "computer storage devices",
-    image: "test image",
-    rating: {
-      rate: 1500,
-      count: 4.6,
-    },
-  },
-  {
-    id: 2,
-    title: "Men's boots",
-    price: 4000,
-    description: "light mens boots for a football",
-    category: "clother",
-    image: "test image",
-    rating: {
-      rate: 2000,
-      count: 4.7,
-    },
-  },
-  {
-    id: 3,
-    title: "Smartphone",
-    price: 30000,
-    description: "Best phone ever",
-    category: "mobile devices",
-    image: "test image",
-    rating: {
-      rate: 13500,
-      count: 5,
-    },
-  },
-];
-
-jest.mock("axios");
-const MockAxios = axios as jest.Mocked<typeof axios>;
-
-const response = {
-  data: MockProducts,
-};
-
-afterEach(() => {
-  jest.clearAllMocks();
-});
 
 describe("Form", () => {
   it("should render Form", () => {
@@ -230,14 +176,11 @@ describe("Form", () => {
   });
 
   it("should upload product after submit form", async () => {
-    MockAxios.get.mockResolvedValue(response);
     jest.useFakeTimers();
     jest.spyOn(global, "setTimeout");
     const { getByTestId } = render(
       <ContextState>
-        <MemoryRouter initialEntries={["/form"]}>
-          <AppRouter />
-        </MemoryRouter>
+        <Form />
       </ContextState>
     );
 
@@ -269,12 +212,7 @@ describe("Form", () => {
     expect(description.value).toBe("");
     expect(image.value).toBe("");
 
-    userEvent.click(screen.getByTestId("home-link"));
-
-    await waitFor(() => {
-      expect(screen.getByTestId("Home-page")).toBeInTheDocument();
-      expect(screen.getByText("title")).toBeInTheDocument();
-    });
+    expect(screen.queryByTestId("Card")).toBeInTheDocument();
 
     jest.runOnlyPendingTimers();
     jest.useRealTimers();

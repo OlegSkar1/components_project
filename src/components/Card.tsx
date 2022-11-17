@@ -15,6 +15,7 @@ export default function Card({ product }: Props) {
 
   return (
     <div
+      data-testid="Card"
       className="flex flex-col items-center text-center justify-between p-6 max-w-[280px] bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
       key={product.id}
     >
