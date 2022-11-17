@@ -3,13 +3,13 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Home from "components/Home";
 import axios from "axios";
-import MockProducts from "./__mocks__/MockProducts";
+import MockCharacterData from "./__mocks__/MockCharacterData";
 
 jest.mock("axios");
 const MockAxios = axios as jest.Mocked<typeof axios>;
 
 const response = {
-  data: MockProducts,
+  data: MockCharacterData,
 };
 
 afterEach(() => {
@@ -27,9 +27,9 @@ describe("Home", () => {
   it("render products", async () => {
     MockAxios.get.mockResolvedValue(response);
     render(<Home />);
-    const products = await screen.findAllByTestId("product-item");
-    expect(products.length).toBe(3);
-    expect(products[0]).toHaveTextContent("Hard");
+    const characters = await screen.findAllByTestId("character-item");
+    expect(characters.length).toBe(3);
+    expect(characters[0]).toHaveTextContent("Test");
     expect(axios.get).toBeCalledTimes(1);
   });
 
@@ -39,10 +39,11 @@ describe("Home", () => {
     expect(screen.queryByTestId("loading")).toBeInTheDocument();
 
     const search = screen.getByPlaceholderText("Search");
-    userEvent.type(search, "Hard");
+    userEvent.type(search, "Test");
+    userEvent.type(search, "{enter}");
 
-    expect(search).toHaveValue("Hard");
-    expect(await screen.findAllByTestId("product-item")).toHaveLength(1);
+    MockAxios.get.mockResolvedValue(response);
+    expect(await screen.findAllByTestId("character-item")).toHaveLength(3);
   });
 
   it("should render error", async () => {
