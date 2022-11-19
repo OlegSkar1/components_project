@@ -1,7 +1,9 @@
-import React, { Component, createRef } from "react";
+import React from "react";
 import { Context, ContextInterface } from "../context";
 import Card from "./Card";
 import SuccessAlert from "./SuccessAlert";
+import { useForm, SubmitHandler } from "react-hook-form";
+import CustomizedDialogs from "./MyModal";
 
 const fileReader = new FileReader();
 
@@ -26,262 +28,196 @@ const fileInputStyles = {
     "block mb-7 w-full text-sm text-pink-600 bg-gray-50 rounded-lg border border-pink-500 cursor-pointer  focus:outline-none dark:bg-gray-700  dark:placeholder-gray-400 focus:border-pink-500 focus:ring-pink-500",
 };
 
-interface IFormState {
-  isActive: boolean;
-  isError: boolean;
-  isDescError: boolean;
-  isUploaded: boolean;
-}
-export default class Form extends Component<unknown, IFormState> {
-  static contextType = Context;
+const inputValidClasses =
+  " focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
 
-  title = createRef<HTMLInputElement>();
-  category = createRef<HTMLInputElement>();
-  price = createRef<HTMLInputElement>();
-  description = createRef<HTMLTextAreaElement>();
-  image = createRef<HTMLInputElement>();
-  submit = createRef<HTMLInputElement>();
-  form = createRef<HTMLFormElement>();
+const inputInvalidClasses =
+  " focus:border-pink-500 focus:ring-pink-500 border-pink-500 text-pink-600";
 
-  state = {
-    isActive: false,
-    isError: false,
-    isDescError: false,
-    isUploaded: false,
+const inputDefaultClasses =
+  "mb-11 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5";
+
+const inputClasses = {
+  normalClasses: inputDefaultClasses + inputValidClasses,
+  errorClasses: inputDefaultClasses + inputInvalidClasses,
+};
+
+type Inputs = {
+  title: string;
+  category: string;
+  price: number;
+  description: string;
+  image: FileList;
+};
+
+function Form() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid, isSubmitted },
+    reset,
+  } = useForm<Inputs>({
+    mode: "onTouched",
+  });
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
+    setTimeout(() => reset(), 2500);
   };
 
-  handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    this.setState({ isActive: false, isUploaded: false });
-    const { addProduct } = this.context as ContextInterface;
+  const { normalClasses, errorClasses } = inputClasses;
 
-    const title = this.title.current;
-    const image = this.image.current;
-    const description = this.description.current;
-    const price = this.price.current;
-    const category = this.category.current;
-    const id = Date.now();
-    if (!title?.value) {
-      title!.required = true;
-    }
-    if (!category?.value) {
-      category!.required = true;
-    }
-    if (!price?.value) {
-      price!.required = true;
-    }
-    if (!description?.value) {
-      this.setState({ isDescError: true });
-    }
-    if (!image?.files?.item(0)) {
-      this.setState({ isError: true });
-    }
+  console.log(errors.image);
 
-    if (
-      title?.validity.valid &&
-      image?.files?.item(0) &&
-      description?.validity.valid &&
-      price?.validity.valid &&
-      category?.validity.valid
-    ) {
-      fileReader.onloadend = async () => {
-        addProduct({
-          id,
-          title: title!.value,
-          category: category.value,
-          description: description.value,
-          price: Number(price.value),
-          image: fileReader.result as string,
-        });
-
-        title.required = false;
-        category.required = false;
-        price.required = false;
-
-        this.form.current?.reset();
-      };
-      fileReader.readAsDataURL(image?.files?.item(0) as File);
-      this.setState({ isUploaded: true });
-      setTimeout(() => {
-        this.setState({ isUploaded: false });
-      }, 2500);
-    }
-  };
-
-  handleBlur: React.FormEventHandler<HTMLFormElement> = (e) => {
-    const event = e.target as HTMLFormElement;
-    switch (event.name) {
-      case event.name.match(/(productTitle)|(productCategory)/)
-        ? event.name
-        : true:
-        {
-          if (!event.value || event.value.length < 3) {
-            event.required = true;
-            event.pattern = "^[A-Za-zА-Яа-яЁё0-9]{3,16}$";
-          }
-        }
-        break;
-      case "productPrice":
-        {
-          if (!event.value) {
-            event.required = true;
-            event.pattern = "^[0-9]{1,8}$";
-          }
-        }
-        break;
-      case "productDescription":
-        {
-          if (event.value.length < 8) {
-            this.setState({ isDescError: true });
-          }
-        }
-        break;
-    }
-  };
-
-  handleChange: React.FormEventHandler<HTMLFormElement> = (e) => {
-    this.setState({ isActive: true });
-    const event = e.target as HTMLFormElement;
-    switch (event.name) {
-      case event.name.match(/(productTitle)|(productCategory)/)
-        ? event.name
-        : true:
-        {
-          if (event.value.length > 2) {
-            event.required = true;
-            event.pattern = "^[A-Za-zА-Яа-яЁё0-9s ]{3,16}$";
-          }
-        }
-        break;
-      case "productPrice":
-        {
-          if (event.value) {
-            event.required = true;
-            event.pattern = "^[\\d]{1,8}$";
-          }
-        }
-        break;
-      case "productDescription":
-        {
-          if (event.value.length >= 8) {
-            this.setState({ isDescError: false });
-          }
-          if (!event.value) {
-            this.setState({ isDescError: true });
-          }
-        }
-        break;
-      case "productImage":
-        {
-          if (event.files[0]) {
-            this.setState({ isError: false });
-          } else this.setState({ isError: true });
-        }
-        break;
-    }
-  };
-
-  render() {
-    const { isActive, isError, isDescError, isUploaded } = this.state;
-    const { active, disabled } = buttonStyles;
-    const { normalInput, errorInput } = textareaInputStyles;
-    const { normalFileInput, errorFileInput } = fileInputStyles;
-
-    const { products } = this.context as ContextInterface;
-
-    return (
-      <div className="container m-auto">
-        <h1 className="mt-5 mb-7 text-center text-4xl font-bold dark:text-white">
-          Форма добавления
-        </h1>
-        <form
-          noValidate
-          id="form"
-          ref={this.form}
-          className="mb-4 w-1/3 m-auto"
-          onSubmit={this.handleSubmit}
-          onBlur={this.handleBlur}
-          onChange={this.handleChange}
-          data-testid="form"
-        >
-          <div className="relative">
-            <input
-              placeholder="Название продукта"
-              type="text"
-              id="title"
-              name="productTitle"
-              data-testid="productTitle"
-              ref={this.title}
-              className="peer mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 invalid:border-pink-500 invalid:text-pink-600"
-            />
-            <p
-              data-testid="titleError"
-              className="text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] invisible peer-invalid:visible "
-            >
-              <span className="font-medium">Ошибка!</span> Введите 3-16
-              символов, кроме специальных
-            </p>
-          </div>
-
-          <div className="relative">
-            <input
-              placeholder="Категория продукта"
-              type="text"
-              id="category"
-              name="productCategory"
-              data-testid="productCategory"
-              ref={this.category}
-              className="mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 invalid:border-pink-500 invalid:text-pink-600 peer"
-            />
-            <p
-              data-testid="categoryError"
-              className="text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] invisible peer-invalid:visible "
-            >
-              <span className="font-medium">Ошибка!</span> Введите 3-16 символов
-            </p>
-          </div>
-
-          <div className="relative">
-            <input
-              placeholder="Стоимость"
-              type="text"
-              id="price"
-              ref={this.price}
-              name="productPrice"
-              data-testid="productPrice"
-              className="mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 invalid:border-pink-500 invalid:text-pink-600 peer"
-            />
-            <p
-              data-testid="priceError"
-              className="text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] invisible peer-invalid:visible "
-            >
-              <span className="font-medium">Ошибка!</span> Введите 1-8 цифр
-            </p>
-          </div>
-
-          <div className="relative">
-            <textarea
-              id="message"
-              rows={8}
-              ref={this.description}
-              name="productDescription"
-              maxLength={800}
-              minLength={8}
-              className={isDescError ? errorInput : normalInput}
-              placeholder="Введите описание продукта"
-              data-testid="productDescription"
-            />
-            {isDescError && (
-              <p
-                data-testid="descError"
-                className="text-sm text-red-600 dark:text-red-500 absolute top-[185px] left-[10px] "
-              >
-                <span className="font-medium">Ошибка!</span> Введите 8-40
-                символов
-              </p>
+  return (
+    <div className="container m-auto">
+      <h1 className="mt-5 mb-7 text-center text-4xl font-bold dark:text-white">
+        Форма добавления
+      </h1>
+      <form
+        noValidate
+        id="form"
+        className="mb-4 w-1/3 m-auto"
+        onSubmit={handleSubmit(onSubmit)}
+        data-testid="form"
+      >
+        <div className="relative">
+          <input
+            placeholder="Название продукта"
+            type="text"
+            id="title"
+            {...register("title", {
+              required: true,
+              pattern: {
+                value: /^[A-Za-zА-Яа-яЁё0-9]{3,16}$/,
+                message: "Введите 3-16 символов, кроме специальных.",
+              },
+            })}
+            data-testid="productTitle"
+            className={!errors.title ? normalClasses : errorClasses}
+          />
+          <div
+            data-testid="titleError"
+            className={
+              !errors.title
+                ? "invisible absolute"
+                : "text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] visible"
+            }
+          >
+            {errors?.title && (
+              <span>
+                <strong>Ошибка!</strong>{" "}
+                {errors.title?.message || "Поле не заполнено"}
+              </span>
             )}
           </div>
+        </div>
 
+        <div className="relative">
+          <input
+            placeholder="Категория продукта"
+            type="text"
+            id="category"
+            data-testid="productCategory"
+            className={!errors.category ? normalClasses : errorClasses}
+            {...register("category", {
+              required: true,
+              pattern: {
+                value: /^[A-Za-zА-Яа-яЁё0-9]{3,16}$/,
+                message: "Введите 3-16 символов, кроме специальных.",
+              },
+            })}
+          />
+          <div
+            data-testid="categoryError"
+            className={
+              !errors.category
+                ? "invisible absolute"
+                : "text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] visible"
+            }
+          >
+            {errors?.category && (
+              <span>
+                <strong>Ошибка!</strong>{" "}
+                {errors.category?.message || "Поле не заполнено"}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="relative">
+          <input
+            placeholder="Стоимость"
+            type="text"
+            id="price"
+            {...register("price", {
+              required: true,
+              pattern: {
+                value: /^\d{1,8}$/g,
+                message: "Введите 1-8 цифр.",
+              },
+            })}
+            data-testid="productPrice"
+            className={!errors.price ? normalClasses : errorClasses}
+          />
+          <p
+            data-testid="priceError"
+            className={
+              !errors.price
+                ? "invisible absolute"
+                : "text-sm text-red-600 dark:text-red-500 absolute top-[45px] left-[10px] visible"
+            }
+          >
+            {errors?.price && (
+              <span>
+                <strong>Ошибка!</strong>{" "}
+                {errors.price?.message || "Поле не заполнено"}
+              </span>
+            )}
+          </p>
+        </div>
+
+        <div className="relative">
+          <textarea
+            id="message"
+            rows={8}
+            {...register("description", {
+              maxLength: {
+                value: 800,
+                message: "Длина текста превышена!",
+              },
+              minLength: {
+                value: 8,
+                message: "Напишите минимум 8 символов!",
+              },
+              required: true,
+            })}
+            className={
+              !errors.description
+                ? textareaInputStyles.normalInput
+                : textareaInputStyles.errorInput
+            }
+            placeholder="Введите описание продукта"
+            data-testid="productDescription"
+          />
+          <p
+            data-testid="descError"
+            className={
+              !errors.description
+                ? "invisible absolute"
+                : "text-sm text-red-600 dark:text-red-500 absolute top-[185px] left-[10px] visible"
+            }
+          >
+            {errors?.description && (
+              <span>
+                <strong>Ошибка!</strong>{" "}
+                {errors.description?.message || "Поле не заполнено"}
+              </span>
+            )}
+          </p>
+        </div>
+
+        <div className="relative">
           <label
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
             htmlFor="file_input"
@@ -289,33 +225,60 @@ export default class Form extends Component<unknown, IFormState> {
             Загрузить картинку
           </label>
           <input
-            className={isError ? errorFileInput : normalFileInput}
+            className={
+              !errors.image
+                ? fileInputStyles.normalFileInput
+                : fileInputStyles.errorFileInput
+            }
             id="file_input"
             type="file"
             accept="image/*"
-            name="productImage"
-            ref={this.image}
+            {...register("image", {
+              required: "Картинка не выбрана!",
+              validate: (value) => {
+                return (
+                  /\.(?:jpe?g|png)$/.test(value[0].name) ||
+                  "Выберите фаил формата (jpeg, jpg, png)!"
+                );
+              },
+            })}
             data-testid="productImage"
           />
-
-          <input
-            type="submit"
-            name="submit"
-            className={isActive ? active : disabled}
-            value="Добавить"
-            disabled={isActive ? false : true}
-            ref={this.submit}
-            data-testid="submit"
-          />
-        </form>
-        <SuccessAlert isUploaded={isUploaded} />
-        <div className="flex flex-wrap justify-center gap-3 mt-4">
-          {products &&
-            products.map((product) => (
-              <Card key={product.id} product={product} />
-            ))}
+          <p
+            data-testid="descError"
+            className={
+              !errors.image
+                ? "invisible absolute"
+                : "text-sm text-red-600 dark:text-red-500 absolute top-[75px] left-[10px] visible"
+            }
+          >
+            {errors?.image && (
+              <span>
+                <strong>Ошибка!</strong>{" "}
+                {errors.image?.message || "Выберите картинку!"}
+              </span>
+            )}
+          </p>
         </div>
+
+        <input
+          type="submit"
+          name="submit"
+          className={isValid ? buttonStyles.active : buttonStyles.disabled}
+          value="Добавить"
+          disabled={isValid ? false : true}
+          data-testid="submit"
+        />
+      </form>
+      <SuccessAlert isSubmitted={isSubmitted} />
+      <div className="flex flex-wrap justify-center gap-3 mt-4">
+        {/* {products &&
+          products.map((product) => (
+            <Card key={product.id} product={product} />
+          ))} */}
       </div>
-    );
-  }
+    </div>
+  );
 }
+
+export default Form;
