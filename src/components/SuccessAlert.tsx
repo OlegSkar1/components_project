@@ -1,15 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
   isSubmitted: boolean;
 };
 
 function SuccessAlert({ isSubmitted }: Props) {
-  const opacityClass = isSubmitted ? "opacity-100" : "opacity-0";
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    if (isSubmitted) {
+      setIsVisible(true);
+    } else if (!isSubmitted) {
+      setTimeout(() => {
+        setIsVisible(false);
+      }, 2000);
+    }
+  }, [isSubmitted]);
+
+  const opacityClass = isVisible ? "opacity-100" : "opacity-0";
+
   const alertClasses = [
-    "absolute w-1/3 bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 p-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800 transition-all duration-500",
+    "w-1/3 m-auto py-2.5 px-5 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800 transition-all duration-500",
     opacityClass,
   ];
+
   return (
     <div
       id="successAlert"

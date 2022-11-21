@@ -4,6 +4,10 @@ import userEvent from "@testing-library/user-event";
 import Form from "../components/Form";
 import { ContextState } from "../context";
 
+const mockData = jest.fn((title, category, price, description, image) => {
+  return Promise.resolve({ title, category, price, description, image });
+});
+
 describe("Form", () => {
   it("should render Form", () => {
     render(<Form />);
@@ -50,133 +54,62 @@ describe("Form", () => {
     expect(image.files?.length).toBe(1);
   });
 
-  it("should inputTitle invalid after invalid input text", () => {
-    const { getByPlaceholderText } = render(<Form />);
-    const title = getByPlaceholderText("Название продукта");
-    userEvent.type(title, "test!");
-
-    expect(title).toBeInvalid();
-  });
-
-  it("should inputTitle invalid after blur input", () => {
+  it("should inputTitle invalid after blur input", async () => {
     const { getByPlaceholderText } = render(<Form />);
     const title = getByPlaceholderText("Название продукта");
     const category = getByPlaceholderText("Категория продукта");
     userEvent.click(title);
     userEvent.click(category);
 
-    expect(title).toBeInvalid();
+    expect(await screen.findAllByRole("alert")).toHaveLength(1);
+    expect(await screen.findByText("Поле не заполнено")).toBeInTheDocument();
   });
 
-  it("should inputCategory invalid after invalid input text", () => {
-    const { getByPlaceholderText } = render(<Form />);
-    const category = getByPlaceholderText("Категория продукта");
-    userEvent.type(category, "test!");
-
-    expect(category).toBeInvalid();
-  });
-
-  it("should inputCategory invalid after blur input", () => {
+  it("should inputCategory invalid after blur input", async () => {
     const { getByPlaceholderText } = render(<Form />);
     const title = getByPlaceholderText("Название продукта");
     const category = getByPlaceholderText("Категория продукта");
     userEvent.click(category);
     userEvent.click(title);
 
-    expect(category).toBeInvalid();
+    expect(await screen.findAllByRole("alert")).toHaveLength(1);
+    expect(await screen.findByText("Поле не заполнено")).toBeInTheDocument();
   });
 
-  it("should inputPrice invalid after invalid input text", () => {
-    const { getByPlaceholderText } = render(<Form />);
-    const price = getByPlaceholderText("Стоимость");
-    userEvent.type(price, "test!");
-
-    expect(price).toBeInvalid();
-  });
-
-  it("should inputPrice invalid after blur input", () => {
+  it("should inputPrice invalid after blur input", async () => {
     const { getByPlaceholderText } = render(<Form />);
     const price = getByPlaceholderText("Стоимость");
     const category = getByPlaceholderText("Категория продукта");
     userEvent.click(price);
     userEvent.click(category);
 
-    expect(price).toBeInvalid();
+    expect(await screen.findAllByRole("alert")).toHaveLength(1);
+    expect(await screen.findByText("Поле не заполнено")).toBeInTheDocument();
   });
 
-  it("should inputDescription invalid after invalid input text", () => {
-    const { getByPlaceholderText } = render(<Form />);
-    const description = getByPlaceholderText("Введите описание продукта");
-    userEvent.type(description, "test");
-    userEvent.clear(description);
-
-    expect(description).toHaveClass("border-pink-500");
-  });
-
-  it("should inputDescription invalid after blur input", () => {
+  it("should inputDescription invalid after blur input", async () => {
     const { getByPlaceholderText } = render(<Form />);
     const price = getByPlaceholderText("Стоимость");
     const description = getByPlaceholderText("Введите описание продукта");
     userEvent.click(description);
     userEvent.click(price);
 
-    expect(description).toHaveClass("border-pink-500");
+    expect(await screen.findAllByRole("alert")).toHaveLength(1);
+    expect(await screen.findByText("Поле не заполнено")).toBeInTheDocument();
   });
 
-  it("should inputFile invalid after empty input file", () => {
+  it("should inputFile invalid after empty input file", async () => {
     const { getByTestId } = render(<Form />);
+    const invalidFile = new File(["hello"], "hello.tiff");
     const image = getByTestId("productImage");
+    userEvent.upload(image, invalidFile);
 
-    fireEvent.change(image, { target: { files: [] } });
-
-    expect(image).toHaveClass("text-pink-600");
-  });
-
-  it("should inputs required after submit if value empty else pattern incorrect", async () => {
-    const { getByTestId, findByTestId } = render(<Form />);
-    const title = getByTestId("productTitle");
-    const titleError = getByTestId("titleError");
-
-    const category = getByTestId("productCategory");
-    const categoryError = getByTestId("categoryError");
-
-    const price = getByTestId("productPrice");
-    const priceError = getByTestId("priceError");
-
-    const description = findByTestId("productDescription");
-    const descError = findByTestId("descError");
-
-    const image = getByTestId("productImage");
-    const submit = getByTestId("submit");
-
-    userEvent.type(category, "test");
-    userEvent.click(price);
-    userEvent.clear(category);
-    expect(submit).toBeEnabled();
-
-    userEvent.click(submit);
-
-    expect(title).toBeRequired();
-    expect(title).toBeInvalid();
-    expect(titleError).toBeVisible();
-
-    expect(price).toBeRequired();
-    expect(price).toBeInvalid();
-    expect(priceError).toBeVisible();
-
-    expect(category).toBeRequired();
-    expect(category).toBeInvalid();
-    expect(categoryError).toBeVisible();
-
-    expect(await description).toHaveClass("border-pink-500");
-    expect(await descError).toBeInTheDocument();
-
-    expect(image).toHaveClass("border-pink-500");
-    expect(submit).toBeDisabled();
+    expect(await screen.findAllByRole("alert")).toHaveLength(1);
+    expect(await screen.findByText("Картинка не выбрана!")).toBeInTheDocument();
   });
 
   it("should upload product after submit form", async () => {
-    jest.useFakeTimers();
+    jest.useFakeTimers({ timerLimit: 5000 });
     jest.spyOn(global, "setTimeout");
     const { getByTestId } = render(
       <ContextState>
@@ -200,21 +133,13 @@ describe("Form", () => {
     userEvent.click(submit);
 
     expect(submit).toBeDisabled();
-    expect(screen.getByTestId("successAlert")).toHaveClass("opacity-100");
 
     jest.runAllTimers();
     await waitFor(() => {
+      expect(screen.queryAllByRole("alert")).toHaveLength(1);
       expect(screen.getByTestId("successAlert")).toHaveClass("opacity-0");
+      expect(screen.findByTestId("Card")).toBeInTheDocument();
     });
-    expect(title.value).toBe("");
-    expect(category.value).toBe("");
-    expect(price.value).toBe("");
-    expect(description.value).toBe("");
-    expect(image.value).toBe("");
-
-    expect(screen.queryByTestId("Card")).toBeInTheDocument();
-
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
+    expect(screen.getAllByDisplayValue("")).toHaveLength(1);
   });
 });

@@ -1,9 +1,8 @@
-import React from "react";
-import { Context, ContextInterface } from "../context";
+import React, { useRef, useEffect } from "react";
+import { useMyContext } from "../hook/useMyContext";
 import Card from "./Card";
 import SuccessAlert from "./SuccessAlert";
 import { useForm, SubmitHandler } from "react-hook-form";
-import CustomizedDialogs from "./MyModal";
 
 const fileReader = new FileReader();
 
@@ -45,9 +44,9 @@ const inputClasses = {
 type Inputs = {
   title: string;
   category: string;
-  price: number;
+  price: number | null;
   description: string;
-  image: FileList;
+  image: FileList | null;
 };
 
 function Form() {
@@ -60,14 +59,43 @@ function Form() {
     mode: "onTouched",
   });
 
+  const imageRef = useRef<HTMLInputElement | null>(null);
+
+  const { ref, ...rest } = register("image", {
+    required: "Картинка не выбрана!",
+    validate: (value) => {
+      return (
+        /\.(?:jpe?g|png)$/.test(value![0].name) ||
+        "Выберите фаил формата (jpeg, jpg, png)!"
+      );
+    },
+  });
+
+  const { products, addProduct } = useMyContext();
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
-    setTimeout(() => reset(), 2500);
+    const id = Date.now();
+
+    fileReader.onloadend = () => {
+      const imageSrc = fileReader.result as string;
+      addProduct({
+        id,
+        title: data.title,
+        price: Number(data.price),
+        description: data.description,
+        category: data.category,
+        image: imageSrc,
+      });
+    };
+
+    fileReader.readAsDataURL(imageRef.current?.files?.item(0) as File);
   };
 
-  const { normalClasses, errorClasses } = inputClasses;
+  useEffect(() => {
+    isSubmitted && reset();
+  }, [isSubmitted, reset]);
 
-  console.log(errors.image);
+  const { normalClasses, errorClasses } = inputClasses;
 
   return (
     <div className="container m-auto">
@@ -233,15 +261,12 @@ function Form() {
             id="file_input"
             type="file"
             accept="image/*"
-            {...register("image", {
-              required: "Картинка не выбрана!",
-              validate: (value) => {
-                return (
-                  /\.(?:jpe?g|png)$/.test(value[0].name) ||
-                  "Выберите фаил формата (jpeg, jpg, png)!"
-                );
-              },
-            })}
+            {...rest}
+            name="image"
+            ref={(e) => {
+              ref(e);
+              imageRef.current = e;
+            }}
             data-testid="productImage"
           />
           <p
@@ -254,8 +279,7 @@ function Form() {
           >
             {errors?.image && (
               <span>
-                <strong>Ошибка!</strong>{" "}
-                {errors.image?.message || "Выберите картинку!"}
+                <strong>Ошибка!</strong> {errors.image?.message}
               </span>
             )}
           </p>
@@ -272,10 +296,10 @@ function Form() {
       </form>
       <SuccessAlert isSubmitted={isSubmitted} />
       <div className="flex flex-wrap justify-center gap-3 mt-4">
-        {/* {products &&
+        {products &&
           products.map((product) => (
             <Card key={product.id} product={product} />
-          ))} */}
+          ))}
       </div>
     </div>
   );

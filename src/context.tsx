@@ -1,5 +1,5 @@
 import { IProduct } from "models";
-import React, { createContext, Component } from "react";
+import React, { createContext, useState } from "react";
 
 export interface ContextInterface {
   products?: IProduct[];
@@ -13,21 +13,16 @@ type Props = {
 export const Context = createContext({} as ContextInterface);
 
 const productsArr: IProduct[] = [];
-export class ContextState extends Component<Props> {
-  addProduct = (value: IProduct) => {
+
+export const ContextState = ({ children }: Props) => {
+  const [products, setProducts] = useState<IProduct[]>([]);
+
+  const addProduct = (value: IProduct) => {
     productsArr.push(value);
-    this.setState({ products: productsArr });
+    setProducts(productsArr);
   };
 
-  state = {
-    addProduct: this.addProduct,
-  };
+  const value = { products, addProduct };
 
-  render() {
-    return (
-      <Context.Provider value={this.state}>
-        {this.props.children}
-      </Context.Provider>
-    );
-  }
-}
+  return <Context.Provider value={value}>{children}</Context.Provider>;
+};
