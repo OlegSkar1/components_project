@@ -103,7 +103,6 @@ function Form() {
         Форма добавления
       </h1>
       <form
-        noValidate
         id="form"
         className="mb-4 w-1/3 m-auto"
         onSubmit={handleSubmit(onSubmit)}
@@ -125,6 +124,7 @@ function Form() {
             className={!errors.title ? normalClasses : errorClasses}
           />
           <div
+            role="alert"
             data-testid="titleError"
             className={
               !errors.title
@@ -157,6 +157,7 @@ function Form() {
             })}
           />
           <div
+            role="alert"
             data-testid="categoryError"
             className={
               !errors.category
@@ -189,6 +190,7 @@ function Form() {
             className={!errors.price ? normalClasses : errorClasses}
           />
           <p
+            role="alert"
             data-testid="priceError"
             className={
               !errors.price
@@ -229,6 +231,7 @@ function Form() {
             data-testid="productDescription"
           />
           <p
+            role="alert"
             data-testid="descError"
             className={
               !errors.description
@@ -270,7 +273,8 @@ function Form() {
             data-testid="productImage"
           />
           <p
-            data-testid="descError"
+            role="alert"
+            data-testid="imageError"
             className={
               !errors.image
                 ? "invisible absolute"

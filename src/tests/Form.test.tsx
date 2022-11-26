@@ -1,11 +1,19 @@
 import React from "react";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Form from "../components/Form";
 import { ContextState } from "../context";
+import SuccessAlert from "../components/SuccessAlert";
 
-const mockData = jest.fn((title, category, price, description, image) => {
-  return Promise.resolve({ title, category, price, description, image });
+jest.mock("../components/SuccessAlert");
+const MockAlert = SuccessAlert as jest.Mocked<typeof SuccessAlert>;
+
+jest.mock("../components/Card", () =>
+  jest.fn(() => <div data-testid="Card" />)
+);
+
+afterEach(() => {
+  jest.clearAllMocks();
 });
 
 describe("Form", () => {
@@ -54,63 +62,56 @@ describe("Form", () => {
     expect(image.files?.length).toBe(1);
   });
 
-  it("should inputTitle invalid after blur input", async () => {
+  it("should inputTitle invalid after blur input", () => {
     const { getByPlaceholderText } = render(<Form />);
     const title = getByPlaceholderText("Название продукта");
     const category = getByPlaceholderText("Категория продукта");
     userEvent.click(title);
     userEvent.click(category);
 
-    expect(await screen.findAllByRole("alert")).toHaveLength(1);
-    expect(await screen.findByText("Поле не заполнено")).toBeInTheDocument();
+    expect(screen.queryByTestId("titleError")).toBeVisible();
   });
 
-  it("should inputCategory invalid after blur input", async () => {
+  it("should inputCategory invalid after blur input", () => {
     const { getByPlaceholderText } = render(<Form />);
     const title = getByPlaceholderText("Название продукта");
     const category = getByPlaceholderText("Категория продукта");
     userEvent.click(category);
     userEvent.click(title);
 
-    expect(await screen.findAllByRole("alert")).toHaveLength(1);
-    expect(await screen.findByText("Поле не заполнено")).toBeInTheDocument();
+    expect(screen.queryByTestId("categoryError")).toBeVisible();
   });
 
-  it("should inputPrice invalid after blur input", async () => {
+  it("should inputPrice invalid after blur input", () => {
     const { getByPlaceholderText } = render(<Form />);
     const price = getByPlaceholderText("Стоимость");
     const category = getByPlaceholderText("Категория продукта");
     userEvent.click(price);
     userEvent.click(category);
 
-    expect(await screen.findAllByRole("alert")).toHaveLength(1);
-    expect(await screen.findByText("Поле не заполнено")).toBeInTheDocument();
+    expect(screen.queryByTestId("priceError")).toBeVisible();
   });
 
-  it("should inputDescription invalid after blur input", async () => {
+  it("should inputDescription invalid after blur input", () => {
     const { getByPlaceholderText } = render(<Form />);
     const price = getByPlaceholderText("Стоимость");
     const description = getByPlaceholderText("Введите описание продукта");
     userEvent.click(description);
     userEvent.click(price);
 
-    expect(await screen.findAllByRole("alert")).toHaveLength(1);
-    expect(await screen.findByText("Поле не заполнено")).toBeInTheDocument();
+    expect(screen.queryByTestId("descError")).toBeVisible();
   });
 
-  it("should inputFile invalid after empty input file", async () => {
+  it("should inputFile invalid after empty input file", () => {
     const { getByTestId } = render(<Form />);
     const invalidFile = new File(["hello"], "hello.tiff");
     const image = getByTestId("productImage");
     userEvent.upload(image, invalidFile);
 
-    expect(await screen.findAllByRole("alert")).toHaveLength(1);
-    expect(await screen.findByText("Картинка не выбрана!")).toBeInTheDocument();
+    expect(screen.queryByTestId("imageError")).toBeVisible();
   });
 
   it("should upload product after submit form", async () => {
-    jest.useFakeTimers({ timerLimit: 5000 });
-    jest.spyOn(global, "setTimeout");
     const { getByTestId } = render(
       <ContextState>
         <Form />
@@ -130,16 +131,13 @@ describe("Form", () => {
     userEvent.type(price, "100");
     userEvent.type(description, "description");
     userEvent.upload(image, file);
-    userEvent.click(submit);
 
+    expect(submit.getAttribute("disabled")).toBe("");
+    userEvent.click(submit);
     expect(submit).toBeDisabled();
 
-    jest.runAllTimers();
-    await waitFor(() => {
-      expect(screen.queryAllByRole("alert")).toHaveLength(1);
-      expect(screen.getByTestId("successAlert")).toHaveClass("opacity-0");
-      expect(screen.findByTestId("Card")).toBeInTheDocument();
-    });
-    expect(screen.getAllByDisplayValue("")).toHaveLength(1);
+    expect(MockAlert).toBeCalledTimes(1);
+
+    expect(screen.queryByTestId("Card")).not.toBeInTheDocument();
   });
 });
