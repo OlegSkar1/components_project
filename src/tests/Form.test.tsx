@@ -18,33 +18,53 @@ afterEach(() => {
 
 describe("Form", () => {
   it("should render Form", () => {
-    render(<Form />);
+    render(
+      <ContextState>
+        <Form />
+      </ContextState>
+    );
     expect(screen.getByText(/Форма/)).toBeInTheDocument();
   });
 
   it("should input title", () => {
-    const { getByPlaceholderText } = render(<Form />);
+    const { getByPlaceholderText } = render(
+      <ContextState>
+        <Form />
+      </ContextState>
+    );
     const title = getByPlaceholderText("Название продукта");
     userEvent.type(title, "title");
     expect(screen.getByDisplayValue("title")).toBeInTheDocument();
   });
 
   it("should input category", () => {
-    const { getByPlaceholderText } = render(<Form />);
+    const { getByPlaceholderText } = render(
+      <ContextState>
+        <Form />
+      </ContextState>
+    );
     const category = getByPlaceholderText("Категория продукта");
     userEvent.type(category, "category");
     expect(screen.getByDisplayValue("category")).toBeInTheDocument();
   });
 
   it("should input price", () => {
-    const { getByPlaceholderText } = render(<Form />);
+    const { getByPlaceholderText } = render(
+      <ContextState>
+        <Form />
+      </ContextState>
+    );
     const price = getByPlaceholderText("Стоимость");
     userEvent.type(price, "200");
     expect(screen.getByDisplayValue("200")).toBeInTheDocument();
   });
 
   it("should input description", () => {
-    const { getByPlaceholderText } = render(<Form />);
+    const { getByPlaceholderText } = render(
+      <ContextState>
+        <Form />
+      </ContextState>
+    );
     const description = getByPlaceholderText("Введите описание продукта");
     userEvent.type(description, "description");
     expect(screen.getByDisplayValue("description")).toBeInTheDocument();
@@ -53,7 +73,11 @@ describe("Form", () => {
   it("should input image", () => {
     const file = new File(["hello"], "hello.png", { type: "image/png" });
 
-    const { getByTestId } = render(<Form />);
+    const { getByTestId } = render(
+      <ContextState>
+        <Form />
+      </ContextState>
+    );
     const image = getByTestId("productImage") as HTMLInputElement;
 
     userEvent.upload(image, file);
@@ -63,7 +87,11 @@ describe("Form", () => {
   });
 
   it("should inputTitle invalid after blur input", () => {
-    const { getByPlaceholderText } = render(<Form />);
+    const { getByPlaceholderText } = render(
+      <ContextState>
+        <Form />
+      </ContextState>
+    );
     const title = getByPlaceholderText("Название продукта");
     const category = getByPlaceholderText("Категория продукта");
     userEvent.click(title);
@@ -73,7 +101,11 @@ describe("Form", () => {
   });
 
   it("should inputCategory invalid after blur input", () => {
-    const { getByPlaceholderText } = render(<Form />);
+    const { getByPlaceholderText } = render(
+      <ContextState>
+        <Form />
+      </ContextState>
+    );
     const title = getByPlaceholderText("Название продукта");
     const category = getByPlaceholderText("Категория продукта");
     userEvent.click(category);
@@ -83,7 +115,11 @@ describe("Form", () => {
   });
 
   it("should inputPrice invalid after blur input", () => {
-    const { getByPlaceholderText } = render(<Form />);
+    const { getByPlaceholderText } = render(
+      <ContextState>
+        <Form />
+      </ContextState>
+    );
     const price = getByPlaceholderText("Стоимость");
     const category = getByPlaceholderText("Категория продукта");
     userEvent.click(price);
@@ -93,7 +129,11 @@ describe("Form", () => {
   });
 
   it("should inputDescription invalid after blur input", () => {
-    const { getByPlaceholderText } = render(<Form />);
+    const { getByPlaceholderText } = render(
+      <ContextState>
+        <Form />
+      </ContextState>
+    );
     const price = getByPlaceholderText("Стоимость");
     const description = getByPlaceholderText("Введите описание продукта");
     userEvent.click(description);
@@ -103,7 +143,11 @@ describe("Form", () => {
   });
 
   it("should inputFile invalid after empty input file", () => {
-    const { getByTestId } = render(<Form />);
+    const { getByTestId } = render(
+      <ContextState>
+        <Form />
+      </ContextState>
+    );
     const invalidFile = new File(["hello"], "hello.tiff");
     const image = getByTestId("productImage");
     userEvent.upload(image, invalidFile);

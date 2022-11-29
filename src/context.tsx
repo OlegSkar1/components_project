@@ -1,28 +1,26 @@
 import { IProduct } from "models";
-import React, { createContext, useState } from "react";
+import React, { createContext, useReducer } from "react";
+import reducer, { Action } from "reducer";
 
 export interface ContextInterface {
-  products?: IProduct[];
-  addProduct: (value: IProduct) => void;
+  products: IProduct[];
 }
 
 type Props = {
   children: React.ReactNode;
 };
 
-export const Context = createContext({} as ContextInterface);
-
-const productsArr: IProduct[] = [];
+export const Context = createContext({} as IProduct[]);
+export const dispatchContext = createContext({} as React.Dispatch<Action>);
 
 export const ContextState = ({ children }: Props) => {
-  const [products, setProducts] = useState<IProduct[]>([]);
+  const [state, dispatch] = useReducer(reducer, []);
 
-  const addProduct = (value: IProduct) => {
-    productsArr.push(value);
-    setProducts(productsArr);
-  };
-
-  const value = { products, addProduct };
-
-  return <Context.Provider value={value}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={state}>
+      <dispatchContext.Provider value={dispatch}>
+        {children}
+      </dispatchContext.Provider>
+    </Context.Provider>
+  );
 };

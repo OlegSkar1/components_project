@@ -71,20 +71,23 @@ function Form() {
     },
   });
 
-  const { products, addProduct } = useMyContext();
+  const { state, dispatch } = useMyContext();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     const id = Date.now();
 
     fileReader.onloadend = () => {
       const imageSrc = fileReader.result as string;
-      addProduct({
-        id,
-        title: data.title,
-        price: Number(data.price),
-        description: data.description,
-        category: data.category,
-        image: imageSrc,
+      dispatch({
+        type: "addProduct",
+        payload: {
+          id,
+          title: data.title,
+          price: Number(data.price),
+          description: data.description,
+          category: data.category,
+          image: imageSrc,
+        },
       });
     };
 
@@ -300,10 +303,8 @@ function Form() {
       </form>
       <SuccessAlert isSubmitted={isSubmitted} />
       <div className="flex flex-wrap justify-center gap-3 mt-4">
-        {products &&
-          products.map((product) => (
-            <Card key={product.id} product={product} />
-          ))}
+        {state &&
+          state.map((product) => <Card key={product.id} product={product} />)}
       </div>
     </div>
   );

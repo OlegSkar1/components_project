@@ -1,8 +1,10 @@
 import { useContext } from "react";
-import { Context } from "../context";
+import { Context, dispatchContext } from "../context";
 
 function useMyContext() {
-  return useContext(Context);
+  const state = useContext(Context);
+  const dispatch = useContext(dispatchContext);
+  return { state, dispatch };
 }
 
 export { useMyContext };
