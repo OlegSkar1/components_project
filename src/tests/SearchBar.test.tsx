@@ -12,13 +12,11 @@ describe("SearchBar", () => {
   });
 
   it("Should call localStorage getItem on render", () => {
-    render(<SearchBar updateData={updateData} />);
+    render(<SearchBar />);
     expect(localStorage.getItem).toHaveBeenCalledTimes(1);
   });
   it("Should call localStorage setItem on unmount", () => {
-    const { getByPlaceholderText, unmount } = render(
-      <SearchBar updateData={updateData} />
-    );
+    const { getByPlaceholderText, unmount } = render(<SearchBar />);
 
     const input = getByPlaceholderText(/search/i);
     userEvent.type(input, "men");

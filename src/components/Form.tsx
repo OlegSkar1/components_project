@@ -71,23 +71,20 @@ function Form() {
     },
   });
 
-  const { state, dispatch } = useMyContext();
+  const { state, addProduct } = useMyContext();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     const id = Date.now();
 
     fileReader.onloadend = () => {
       const imageSrc = fileReader.result as string;
-      dispatch({
-        type: "addProduct",
-        payload: {
-          id,
-          title: data.title,
-          price: Number(data.price),
-          description: data.description,
-          category: data.category,
-          image: imageSrc,
-        },
+      addProduct({
+        id,
+        title: data.title,
+        price: Number(data.price),
+        description: data.description,
+        category: data.category,
+        image: imageSrc,
       });
     };
 

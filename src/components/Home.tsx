@@ -1,46 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Character from "./Character";
 import SearchBar from "./SearchBar";
-import axios, { AxiosError } from "axios";
 import Loading from "./Loading";
-import { ICharacter, ICharacterData } from "charactersModule";
-
-const BASE_URL = "https://rickandmortyapi.com/api/";
+import { ICharacter } from "charactersModule";
+import { useMyContext } from "hook/useMyContext";
+import { useFetchData } from "hook/useFetchData";
 
 export default function Home() {
-  const [characters, setCharacters] = useState<ICharacter[]>([]);
-  const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      let response;
-      try {
-        setError("");
-        setLoading(true);
-        if (!query) {
-          response = await axios.get<ICharacterData>(BASE_URL + "character");
-        } else {
-          response = await axios.get<ICharacterData>(
-            `${BASE_URL}character/?name=${query}`
-          );
-        }
-
-        setLoading(false);
-        setCharacters(response.data.results);
-      } catch (error) {
-        setLoading(false);
-        const e = error as AxiosError;
-        setError(e.message);
-      }
-    };
-    fetchData();
-  }, [query]);
-
-  const updateData = (value: string) => {
-    setQuery(value);
-  };
+  const { state } = useMyContext();
+  const [error, loading] = useFetchData();
+  const { query, characters } = state;
 
   const filteredCharacters = (characters: ICharacter[]) =>
     characters.filter((character) => {
@@ -51,7 +20,7 @@ export default function Home() {
 
   return (
     <div data-testid="Home-page">
-      <SearchBar updateData={updateData} />
+      <SearchBar />
       {loading && <Loading />}
       {error && (
         <p
