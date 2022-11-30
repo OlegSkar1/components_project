@@ -303,8 +303,10 @@ function Form() {
       </form>
       <SuccessAlert isSubmitted={isSubmitted} />
       <div className="flex flex-wrap justify-center gap-3 mt-4">
-        {state &&
-          state.map((product) => <Card key={product.id} product={product} />)}
+        {state.products &&
+          state.products.map((product) => (
+            <Card key={product.id} product={product} />
+          ))}
       </div>
     </div>
   );

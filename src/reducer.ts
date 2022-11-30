@@ -1,11 +1,15 @@
 import { IProduct } from "models";
 
-export type Action = { type: "addProduct"; payload: IProduct };
+export type MyAction = { type: "addProduct"; payload: IProduct };
 
-export default (state: IProduct[], action: Action) => {
+export interface MyState {
+  products: IProduct[];
+}
+
+export default (state: MyState, action: MyAction): MyState => {
   switch (action.type) {
     case "addProduct":
-      return [...state, action.payload];
+      return { ...state, products: [...state.products, action.payload] };
     default:
       return state;
   }
