@@ -3,8 +3,8 @@ import Character from "./Character";
 import SearchBar from "./SearchBar";
 import Loading from "./Loading";
 import { ICharacter } from "charactersModule";
-import { useMyContext } from "hook/useMyContext";
 import { useFetchData } from "hook/useFetchData";
+import { useMyContext } from "hook/useMyContext";
 
 export default function Home() {
   const { state } = useMyContext();

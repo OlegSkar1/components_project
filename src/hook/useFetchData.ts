@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { ICharacterData } from "charactersModule";
 import { useEffect, useState } from "react";
+import { reducerActionCreators } from "reducer/action-creators";
 import { useMyContext } from "./useMyContext";
 
 const BASE_URL = "https://rickandmortyapi.com/api/";
@@ -8,7 +9,8 @@ const BASE_URL = "https://rickandmortyapi.com/api/";
 function useFetchData() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { getCharacters, state } = useMyContext();
+  const { state, dispatch } = useMyContext();
+
   const { query } = state;
 
   useEffect(() => {
@@ -26,7 +28,7 @@ function useFetchData() {
         }
 
         setLoading(false);
-        getCharacters(response.data.results);
+        dispatch(reducerActionCreators.getCharacters(response.data.results));
       } catch (error) {
         setLoading(false);
         const e = error as AxiosError;
@@ -34,7 +36,7 @@ function useFetchData() {
       }
     };
     fetchData();
-  }, [query]);
+  }, [query, dispatch]);
   return [error, loading];
 }
 

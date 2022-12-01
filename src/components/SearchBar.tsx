@@ -1,11 +1,11 @@
 import React, { useRef } from "react";
-import { useMyContext } from "hook/useMyContext";
 import useLocalStorage from "hook/useLocalStorage";
+import { reducerActionCreators } from "reducer/action-creators";
+import { useMyContext } from "hook/useMyContext";
 
 export default function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const { setQuery, state } = useMyContext();
+  const { state, dispatch } = useMyContext();
   const { query } = state;
 
   const [search, setSearch] = useLocalStorage(query, "search");
@@ -20,7 +20,7 @@ export default function SearchBar() {
     e.preventDefault();
     if (inputRef.current && inputRef.current.value.length > 2) {
       setSearch(inputRef.current.value);
-      setQuery(search);
+      dispatch(reducerActionCreators.setQuery(search));
     }
   };
 

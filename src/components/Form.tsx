@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from "react";
-import { useMyContext } from "../hook/useMyContext";
 import Card from "./Card";
 import SuccessAlert from "./SuccessAlert";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { reducerActionCreators } from "reducer/action-creators";
+import { useMyContext } from "hook/useMyContext";
 
 const fileReader = new FileReader();
 
@@ -71,21 +72,23 @@ function Form() {
     },
   });
 
-  const { state, addProduct } = useMyContext();
+  const { state, dispatch } = useMyContext();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     const id = Date.now();
 
     fileReader.onloadend = () => {
       const imageSrc = fileReader.result as string;
-      addProduct({
-        id,
-        title: data.title,
-        price: Number(data.price),
-        description: data.description,
-        category: data.category,
-        image: imageSrc,
-      });
+      dispatch(
+        reducerActionCreators.addProduct({
+          id,
+          title: data.title,
+          price: Number(data.price),
+          description: data.description,
+          category: data.category,
+          image: imageSrc,
+        })
+      );
     };
 
     fileReader.readAsDataURL(imageRef.current?.files?.item(0) as File);
