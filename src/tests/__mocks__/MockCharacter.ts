@@ -1,6 +1,6 @@
-import { ICharacter } from "charactersModule";
+import { Character } from "rickmortyapi/dist/interfaces";
 
-const MockCharacter: ICharacter = {
+const MockCharacter: Character = {
   id: 1,
   name: "Test",
   status: "Alive",
@@ -18,7 +18,7 @@ const MockCharacter: ICharacter = {
   image: "test image",
   episode: ["episode-1", "episode-2"],
   url: "http://localhost:8080",
-  created: new Date("2017-11-04T18:48:46.250Z"),
+  created: new Date("2017-11-04T18:48:46.250Z").toString(),
 };
 
 export default MockCharacter;

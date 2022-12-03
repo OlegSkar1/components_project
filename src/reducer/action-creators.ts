@@ -1,5 +1,5 @@
-import { ICharacter } from "charactersModule";
 import { IProduct } from "models";
+import { Character } from "rickmortyapi/dist/interfaces";
 import {
   addProductAction,
   getCharactersAction,
@@ -12,7 +12,7 @@ export const reducerActionCreators = {
     type: MyStateActionEnum.ADD_PRODUCT,
     payload,
   }),
-  getCharacters: (payload: ICharacter[]): getCharactersAction => ({
+  getCharacters: (payload: Character[]): getCharactersAction => ({
     type: MyStateActionEnum.GET_CHARACTERS,
     payload,
   }),

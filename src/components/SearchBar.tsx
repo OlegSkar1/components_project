@@ -19,7 +19,6 @@ export default function SearchBar() {
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (inputRef.current && inputRef.current.value.length > 2) {
-      setSearch(inputRef.current.value);
       dispatch(reducerActionCreators.setQuery(search));
     }
   };

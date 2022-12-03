@@ -1,9 +1,9 @@
-import { ICharacter } from "charactersModule";
 import { IProduct } from "models";
+import { Character } from "rickmortyapi/dist/interfaces";
 
 export interface MyState {
   products: IProduct[];
-  characters: ICharacter[];
+  characters: Character[];
   query: string;
 }
 
@@ -20,7 +20,7 @@ export interface addProductAction {
 
 export interface getCharactersAction {
   type: MyStateActionEnum.GET_CHARACTERS;
-  payload: ICharacter[];
+  payload: Character[];
 }
 
 export interface queryAction {

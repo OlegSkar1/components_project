@@ -1,10 +1,7 @@
-import axios, { AxiosError } from "axios";
-import { ICharacterData } from "charactersModule";
 import { useEffect, useState } from "react";
 import { reducerActionCreators } from "reducer/action-creators";
+import { getCharacters } from "rickmortyapi";
 import { useMyContext } from "./useMyContext";
-
-const BASE_URL = "https://rickandmortyapi.com/api/";
 
 function useFetchData() {
   const [error, setError] = useState("");
@@ -15,23 +12,27 @@ function useFetchData() {
 
   useEffect(() => {
     const fetchData = async () => {
+      const searchQuery = localStorage.getItem("search");
       let response;
       try {
         setError("");
         setLoading(true);
-        if (!query) {
-          response = await axios.get<ICharacterData>(BASE_URL + "character");
+
+        if (searchQuery) {
+          response = await getCharacters({ name: JSON.parse(searchQuery) });
         } else {
-          response = await axios.get<ICharacterData>(
-            `${BASE_URL}character/?name=${query}`
-          );
+          response = await getCharacters();
         }
 
         setLoading(false);
-        dispatch(reducerActionCreators.getCharacters(response.data.results));
+        if (response.data.results) {
+          dispatch(reducerActionCreators.getCharacters(response.data.results));
+        } else {
+          throw new Error("Ошибка, персонаж не найден!!!");
+        }
       } catch (error) {
         setLoading(false);
-        const e = error as AxiosError;
+        const e = error as Error;
         setError(e.message);
       }
     };

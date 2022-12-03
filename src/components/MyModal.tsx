@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
-import { ICharacter } from "charactersModule";
+import { Character } from "rickmortyapi/dist/interfaces";
 import Dropdown from "./Dropdown";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -52,7 +52,7 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
 interface ModalProps {
   handleClose: (value: boolean) => void;
   modalOpen: boolean;
-  character: ICharacter;
+  character: Character;
 }
 
 export default function CustomizedDialogs({

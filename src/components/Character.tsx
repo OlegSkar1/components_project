@@ -1,12 +1,12 @@
-import { ICharacter } from "charactersModule";
 import React, { useState } from "react";
 import MyModal from "./MyModal";
+import { Character } from "rickmortyapi/dist/interfaces";
 
 interface CharacterProps {
-  character: ICharacter;
+  character: Character;
 }
 
-const Character = ({ character }: CharacterProps) => {
+const CharacterCard = ({ character }: CharacterProps) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -40,4 +40,4 @@ const Character = ({ character }: CharacterProps) => {
   );
 };
 
-export default Character;
+export default CharacterCard;
