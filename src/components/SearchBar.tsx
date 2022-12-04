@@ -18,20 +18,20 @@ export default function SearchBar() {
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (inputRef.current && inputRef.current.value.length > 2) {
+    if (inputRef.current) {
       dispatch(reducerActionCreators.setQuery(search));
     }
   };
 
   return (
     <form
-      className="flex items-center justify-center mt-5"
+      className="flex items-center justify-center w-1/2 rounded"
       onSubmit={submitHandler}
     >
       <label htmlFor="simple-search" className="sr-only">
         Search
       </label>
-      <div className="relative w-1/2 ">
+      <div className="relative w-full">
         <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
           <svg
             aria-hidden="true"

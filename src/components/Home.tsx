@@ -5,6 +5,7 @@ import Loading from "./Loading";
 import { Character } from "rickmortyapi/dist/interfaces";
 import { useFetchData } from "hook/useFetchData";
 import { useMyContext } from "hook/useMyContext";
+import AccordionSort from "./AccordionSort";
 
 export default function Home() {
   const { state } = useMyContext();
@@ -20,7 +21,11 @@ export default function Home() {
 
   return (
     <div data-testid="Home-page">
-      <SearchBar />
+      <div className="flex justify-center items-start mt-5 gap-x-5">
+        <SearchBar />
+        <AccordionSort />
+      </div>
+
       {loading && <Loading />}
       {error && (
         <p

@@ -5,12 +5,16 @@ export interface MyState {
   products: IProduct[];
   characters: Character[];
   query: string;
+  status: string;
+  gender: string;
 }
 
 export enum MyStateActionEnum {
   ADD_PRODUCT = "ADD_PRODUCT",
   GET_CHARACTERS = "GET_CHARACTERS",
   QUERY = "QUERY",
+  STATUS = "STATUS",
+  GENDER = "GENDER",
 }
 
 export interface addProductAction {
@@ -28,7 +32,18 @@ export interface queryAction {
   payload: string;
 }
 
+export interface statusAction {
+  type: MyStateActionEnum.STATUS;
+  payload: string;
+}
+export interface genderAction {
+  type: MyStateActionEnum.GENDER;
+  payload: string;
+}
+
 export type aggregateAction =
   | addProductAction
   | getCharactersAction
-  | queryAction;
+  | queryAction
+  | statusAction
+  | genderAction;

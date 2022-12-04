@@ -2,9 +2,11 @@ import { IProduct } from "models";
 import { Character } from "rickmortyapi/dist/interfaces";
 import {
   addProductAction,
+  genderAction,
   getCharactersAction,
   MyStateActionEnum,
   queryAction,
+  statusAction,
 } from "./types";
 
 export const reducerActionCreators = {
@@ -18,6 +20,14 @@ export const reducerActionCreators = {
   }),
   setQuery: (payload: string): queryAction => ({
     type: MyStateActionEnum.QUERY,
+    payload,
+  }),
+  setStatus: (payload: string): statusAction => ({
+    type: MyStateActionEnum.STATUS,
+    payload,
+  }),
+  setGender: (payload: string): genderAction => ({
+    type: MyStateActionEnum.GENDER,
     payload,
   }),
 };

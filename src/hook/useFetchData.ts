@@ -3,25 +3,37 @@ import { reducerActionCreators } from "reducer/action-creators";
 import { getCharacters } from "rickmortyapi";
 import { useMyContext } from "./useMyContext";
 
+interface IOptions {
+  name: string;
+  status: string;
+  gender: string;
+}
+
 function useFetchData() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { state, dispatch } = useMyContext();
 
-  const { query } = state;
+  const { query, status, gender } = state;
 
   useEffect(() => {
     const fetchData = async () => {
-      const searchQuery = localStorage.getItem("search");
+      const name = JSON.parse(localStorage.getItem("search") as string);
+      let options: IOptions = {
+        name,
+        status,
+        gender,
+      };
+
       let response;
       try {
         setError("");
         setLoading(true);
 
-        if (searchQuery) {
-          response = await getCharacters({ name: JSON.parse(searchQuery) });
-        } else {
-          response = await getCharacters();
+        response = await getCharacters(options);
+
+        if (name || status || gender) {
+          options = { ...options, name, status, gender };
         }
 
         setLoading(false);
@@ -37,7 +49,7 @@ function useFetchData() {
       }
     };
     fetchData();
-  }, [query, dispatch]);
+  }, [query, status, gender, dispatch]);
   return [error, loading];
 }
 

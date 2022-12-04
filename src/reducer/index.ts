@@ -4,6 +4,8 @@ export const initialState: MyState = {
   characters: [],
   products: [],
   query: "",
+  status: "",
+  gender: "",
 };
 
 export default (state = initialState, action: aggregateAction): MyState => {
@@ -14,6 +16,10 @@ export default (state = initialState, action: aggregateAction): MyState => {
       return { ...state, characters: [...action.payload] };
     case MyStateActionEnum.QUERY:
       return { ...state, query: action.payload };
+    case MyStateActionEnum.STATUS:
+      return { ...state, status: action.payload };
+    case MyStateActionEnum.GENDER:
+      return { ...state, gender: action.payload };
     default:
       return state;
   }
