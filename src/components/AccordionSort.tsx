@@ -7,17 +7,17 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useMyContext } from "hook/useMyContext";
 import { reducerActionCreators } from "reducer/action-creators";
 
-export enum statusEnum {
+enum statusEnum {
   ALIVE = "Alive",
   DEAD = "Dead",
   UNKNOWN = "unknown",
 }
-export enum genderEnum {
+enum genderEnum {
   MALE = "Male",
   FEMALE = "Female",
   GENDERLESS = "Genderless",
@@ -25,32 +25,58 @@ export enum genderEnum {
 }
 
 function AccordionSort() {
-  const { dispatch } = useMyContext();
+  const { state, dispatch } = useMyContext();
+  const { status, gender } = state;
+
+  const [statusValue, setStatusValue] = useState("");
+  const [genderValue, setGenderValue] = useState("");
+
+  useEffect(() => {
+    if (!status && !gender) {
+      setStatusValue("");
+      setGenderValue("");
+    }
+  }, [status, gender]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       switch (e.target.value) {
         case statusEnum.ALIVE:
         case statusEnum.DEAD:
-          return dispatch(reducerActionCreators.setStatus(e.target.value));
+          {
+            setStatusValue(e.target.value);
+            dispatch(reducerActionCreators.setStatus(e.target.value));
+          }
+          break;
         case genderEnum.MALE:
         case genderEnum.FEMALE:
         case genderEnum.GENDERLESS:
-          return dispatch(reducerActionCreators.setGender(e.target.value));
+          {
+            setGenderValue(e.target.value);
+            dispatch(reducerActionCreators.setGender(e.target.value));
+          }
+          break;
       }
 
       if (e.target.id === "statusUnknown") {
+        setStatusValue(e.target.value);
         return dispatch(reducerActionCreators.setStatus(e.target.value));
       }
 
       if (e.target.id === "genderUnknown") {
+        setGenderValue(e.target.value);
         return dispatch(reducerActionCreators.setGender(e.target.value));
       }
     }
   };
 
   return (
-    <Accordion sx={{ bgcolor: "#1a56db", color: "#fff" }}>
+    <Accordion
+      sx={{
+        bgcolor: "#1a56db",
+        color: "#fff",
+      }}
+    >
       <AccordionSummary
         aria-controls="sort-content"
         id="sort-header"
@@ -69,8 +95,13 @@ function AccordionSort() {
           </AccordionSummary>
           <AccordionDetails>
             <FormControl>
-              <RadioGroup name="status-radio" onChange={handleChange}>
+              <RadioGroup
+                name="status-radio"
+                value={statusValue}
+                onChange={handleChange}
+              >
                 <FormControlLabel
+                  id="status-radio"
                   value="Alive"
                   control={<Radio />}
                   label="Alive"
@@ -91,15 +122,19 @@ function AccordionSort() {
         </Accordion>
         <Accordion>
           <AccordionSummary
-            aria-controls="status-content"
-            id="status-header"
+            aria-controls="gender-content"
+            id="gender-header"
             expandIcon={<ExpandMoreIcon />}
           >
             <span>Gender</span>
           </AccordionSummary>
           <AccordionDetails>
             <FormControl>
-              <RadioGroup name="gender-radio" onChange={handleChange}>
+              <RadioGroup
+                value={genderValue}
+                name="gender-radio"
+                onChange={handleChange}
+              >
                 <FormControlLabel
                   value="Male"
                   control={<Radio />}

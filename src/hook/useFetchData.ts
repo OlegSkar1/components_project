@@ -32,16 +32,21 @@ function useFetchData() {
 
         response = await getCharacters(options);
 
+        if (name) {
+          dispatch(reducerActionCreators.setQuery(name));
+        }
+
         if (name || status || gender) {
           options = { ...options, name, status, gender };
         }
 
-        setLoading(false);
         if (response.data.results) {
           dispatch(reducerActionCreators.getCharacters(response.data.results));
         } else {
           throw new Error("Ошибка, персонаж не найден!!!");
         }
+
+        setLoading(false);
       } catch (error) {
         setLoading(false);
         const e = error as Error;
