@@ -9,6 +9,7 @@ function ResetSortButton() {
   const resetHandler = () => {
     dispatch(reducerActionCreators.setStatus(""));
     dispatch(reducerActionCreators.setGender(""));
+    dispatch(reducerActionCreators.setPage(1));
   };
 
   return (

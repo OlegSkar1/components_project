@@ -6,6 +6,7 @@ import { useFetchData } from "hook/useFetchData";
 import { useMyContext } from "hook/useMyContext";
 import AccordionSort from "./AccordionSort";
 import ResetSortButton from "./ResetSortButton";
+import MyPagination from "./MyPagination";
 
 export default function Home() {
   const { state } = useMyContext();
@@ -34,6 +35,7 @@ export default function Home() {
           <CharacterCard character={character} key={character.id} />
         ))}
       </div>
+      <MyPagination />
     </div>
   );
 }

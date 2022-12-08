@@ -1,20 +1,30 @@
 import { IProduct } from "models";
 import { Character } from "rickmortyapi/dist/interfaces";
 
+export interface MyInfo {
+  count: number;
+  pages: number;
+  next: string | null;
+  prev: string | null;
+}
 export interface MyState {
   products: IProduct[];
   characters: Character[];
+  info: MyInfo | undefined;
   query: string;
   status: string;
   gender: string;
+  page: number;
 }
 
 export enum MyStateActionEnum {
   ADD_PRODUCT = "ADD_PRODUCT",
   GET_CHARACTERS = "GET_CHARACTERS",
+  GET_INFO = "GET_INFO",
   QUERY = "QUERY",
   STATUS = "STATUS",
   GENDER = "GENDER",
+  PAGE = "PAGE",
 }
 
 export interface addProductAction {
@@ -25,6 +35,10 @@ export interface addProductAction {
 export interface getCharactersAction {
   type: MyStateActionEnum.GET_CHARACTERS;
   payload: Character[];
+}
+export interface getInfoAction {
+  type: MyStateActionEnum.GET_INFO;
+  payload: MyInfo | undefined;
 }
 
 export interface queryAction {
@@ -41,9 +55,16 @@ export interface genderAction {
   payload: string;
 }
 
+export interface pageAction {
+  type: MyStateActionEnum.PAGE;
+  payload: number;
+}
+
 export type aggregateAction =
   | addProductAction
   | getCharactersAction
+  | getInfoAction
   | queryAction
   | statusAction
-  | genderAction;
+  | genderAction
+  | pageAction;

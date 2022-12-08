@@ -7,6 +7,7 @@ interface IOptions {
   name: string;
   status: string;
   gender: string;
+  page: number;
 }
 
 function useFetchData() {
@@ -14,7 +15,7 @@ function useFetchData() {
   const [loading, setLoading] = useState(false);
   const { state, dispatch } = useMyContext();
 
-  const { query, status, gender } = state;
+  const { query, status, gender, page } = state;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +24,7 @@ function useFetchData() {
         name,
         status,
         gender,
+        page,
       };
 
       let response;
@@ -36,13 +38,18 @@ function useFetchData() {
           dispatch(reducerActionCreators.setQuery(name));
         }
 
-        if (name || status || gender) {
-          options = { ...options, name, status, gender };
+        if (name || status || gender || page) {
+          options = { ...options, name, status, gender, page };
+        }
+
+        if (response.data) {
+          dispatch(reducerActionCreators.getInfo(response.data.info));
         }
 
         if (response.data.results) {
           dispatch(reducerActionCreators.getCharacters(response.data.results));
         } else {
+          dispatch(reducerActionCreators.getCharacters([]));
           throw new Error("Ошибка, персонаж не найден!!!");
         }
 
@@ -54,7 +61,7 @@ function useFetchData() {
       }
     };
     fetchData();
-  }, [query, status, gender, dispatch]);
+  }, [query, status, gender, page, dispatch]);
   return [error, loading];
 }
 
