@@ -5,10 +5,9 @@ import { useMyContext } from "hook/useMyContext";
 
 export default function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { state, dispatch } = useMyContext();
-  const { query } = state;
+  const { dispatch } = useMyContext();
 
-  const [search, setSearch] = useLocalStorage(query, "search");
+  const [search, setSearch] = useLocalStorage("", "search");
 
   const handleChange = () => {
     if (inputRef.current) {
@@ -19,7 +18,7 @@ export default function SearchBar() {
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (inputRef.current) {
-      dispatch(reducerActionCreators.setQuery(search));
+      dispatch(reducerActionCreators.setPage(1));
     }
   };
 

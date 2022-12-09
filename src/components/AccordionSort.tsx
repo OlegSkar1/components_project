@@ -45,6 +45,7 @@ function AccordionSort() {
         case statusEnum.DEAD:
           {
             setStatusValue(e.target.value);
+            dispatch(reducerActionCreators.setPage(1));
             dispatch(reducerActionCreators.setStatus(e.target.value));
           }
           break;
@@ -53,6 +54,7 @@ function AccordionSort() {
         case genderEnum.GENDERLESS:
           {
             setGenderValue(e.target.value);
+            dispatch(reducerActionCreators.setPage(1));
             dispatch(reducerActionCreators.setGender(e.target.value));
           }
           break;
@@ -60,12 +62,14 @@ function AccordionSort() {
 
       if (e.target.id === "statusUnknown") {
         setStatusValue(e.target.value);
-        return dispatch(reducerActionCreators.setStatus(e.target.value));
+        dispatch(reducerActionCreators.setPage(1));
+        dispatch(reducerActionCreators.setStatus(e.target.value));
       }
 
       if (e.target.id === "genderUnknown") {
         setGenderValue(e.target.value);
-        return dispatch(reducerActionCreators.setGender(e.target.value));
+        dispatch(reducerActionCreators.setPage(1));
+        dispatch(reducerActionCreators.setGender(e.target.value));
       }
     }
   };

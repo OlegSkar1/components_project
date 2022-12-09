@@ -15,11 +15,11 @@ function useFetchData() {
   const [loading, setLoading] = useState(false);
   const { state, dispatch } = useMyContext();
 
-  const { query, status, gender, page } = state;
+  const { status, gender, page } = state;
+  const name = JSON.parse(localStorage.getItem("search") as string);
 
   useEffect(() => {
     const fetchData = async () => {
-      const name = JSON.parse(localStorage.getItem("search") as string);
       let options: IOptions = {
         name,
         status,
@@ -33,10 +33,6 @@ function useFetchData() {
         setLoading(true);
 
         response = await getCharacters(options);
-
-        if (name) {
-          dispatch(reducerActionCreators.setQuery(name));
-        }
 
         if (name || status || gender || page) {
           options = { ...options, name, status, gender, page };
@@ -61,7 +57,7 @@ function useFetchData() {
       }
     };
     fetchData();
-  }, [query, status, gender, page, dispatch]);
+  }, [name, status, gender, page, dispatch]);
   return [error, loading];
 }
 

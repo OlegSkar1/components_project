@@ -8,21 +8,21 @@ export default class Header extends Component {
         <nav className="flex justify-center gap-x-10 items-center">
           <Link
             data-testid="home-link"
-            className="text-xl rounded drop-shadow  transition hover:bg-sky-500 text-slate-300 bg-teal-600 px-2"
+            className="text-xl rounded drop-shadow  transition hover:bg-sky-500 text-white bg-teal-600 px-2"
             to="/"
           >
             Home
           </Link>
           <Link
             data-testid="about-link"
-            className="text-xl rounded drop-shadow transition hover:bg-sky-500 text-slate-300 bg-teal-600 px-2"
+            className="text-xl rounded drop-shadow transition hover:bg-sky-500 text-white bg-teal-600 px-2"
             to="/about"
           >
             About
           </Link>
           <Link
             data-testid="form-link"
-            className="text-xl rounded drop-shadow transition hover:bg-sky-500 text-slate-300 bg-teal-600 px-2"
+            className="text-xl rounded drop-shadow transition hover:bg-sky-500 text-white bg-teal-600 px-2"
             to="/form"
           >
             Create
