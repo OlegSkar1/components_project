@@ -1,52 +1,130 @@
 import { useEffect, useState } from "react";
 import { reducerActionCreators } from "reducer/action-creators";
 import { getCharacters } from "rickmortyapi";
+import { Character } from "rickmortyapi/dist/interfaces";
 import { useMyContext } from "./useMyContext";
+import _ from "lodash";
 
-interface IOptions {
-  name: string;
-  status: string;
-  gender: string;
-  page: number;
+interface Props {
+  numOfCharacters: number;
 }
 
-function useFetchData() {
+function useFetchData({ numOfCharacters }: Props) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { state, dispatch } = useMyContext();
+  const { status, gender, page, filtredCount } = state;
 
-  const { status, gender, page } = state;
-  const name = JSON.parse(localStorage.getItem("search") as string);
+  const name: string = JSON.parse(localStorage.getItem("search") as string)
+    .trim()
+    .toLowerCase();
 
   useEffect(() => {
-    const fetchData = async () => {
-      let options: IOptions = {
+    const fetchFiltredChunks = async (currPage = 1) => {
+      const filtredData = await getCharacters({
         name,
-        status,
         gender,
-        page,
-      };
+        status,
+        page: currPage,
+      });
+      return filtredData;
+    };
 
-      let response;
+    const getFiltredChunks = async () => {
+      const chunks: Character[] = [];
+
+      const filtredData = await fetchFiltredChunks();
+
+      const resultsData = filtredData.data.results;
+      const infoData = filtredData.data.info;
+
+      resultsData && chunks.push(...resultsData);
+
+      if (infoData && resultsData) {
+        for (let i = 2; i <= infoData.pages; i++) {
+          const nextPageData = await fetchFiltredChunks(i);
+          const resultNextData = nextPageData.data.results;
+          resultNextData && chunks.push(...resultNextData);
+        }
+
+        if (filtredCount !== infoData.count) {
+          dispatch(reducerActionCreators.getFiltredCount(infoData.count));
+        }
+
+        const resultChunks = _.chunk(chunks, numOfCharacters);
+
+        return resultChunks;
+      } else if (filtredData.status === 404) {
+        dispatch(reducerActionCreators.getFiltredCount(0));
+      }
+    };
+
+    const fetchFiltredData = async () => {
+      const filtredChunks = await getFiltredChunks();
+      if (filtredChunks && filtredChunks.length > 0) {
+        const currPageFiltredChunk = filtredChunks.filter((_, index) => {
+          return index === page - 1;
+        });
+
+        return _.flatten(currPageFiltredChunk);
+      }
+    };
+
+    const fetchData = async () => {
+      const chunks: Character[] = [];
+
+      const responseAllChar = await getCharacters({ page: 1 });
+      if (responseAllChar) {
+        const dataResults = responseAllChar.data.results;
+        const dataInfo = responseAllChar.data.info;
+
+        dataResults && chunks.push(...dataResults);
+
+        dispatch(reducerActionCreators.getInfo(dataInfo));
+
+        if (dataResults && dataInfo) {
+          for (let i = 2; i <= dataInfo.pages; i++) {
+            const nextPage = await getCharacters({ page: i });
+            const nextDataResults = nextPage.data.results;
+
+            nextDataResults && chunks.push(...nextDataResults);
+          }
+          return _.chunk(chunks, numOfCharacters);
+        }
+      }
+    };
+
+    const getPage = async () => {
+      const allChunks = await fetchData();
+
+      if (allChunks) {
+        const currPageChunk = allChunks.filter((_, index) => {
+          return index === page - 1;
+        });
+
+        return _.flatten(currPageChunk);
+      }
+    };
+
+    const fetchCurrPageData = async () => {
       try {
         setError("");
         setLoading(true);
 
-        response = await getCharacters(options);
+        if (name || gender || status) {
+          const filtredResponse = await fetchFiltredData();
 
-        if (name || status || gender || page) {
-          options = { ...options, name, status, gender, page };
-        }
+          filtredResponse &&
+            dispatch(reducerActionCreators.getCharacters(filtredResponse));
 
-        if (response.data) {
-          dispatch(reducerActionCreators.getInfo(response.data.info));
-        }
-
-        if (response.data.results) {
-          dispatch(reducerActionCreators.getCharacters(response.data.results));
+          if (!filtredResponse) {
+            dispatch(reducerActionCreators.getCharacters([]));
+            throw new Error("Ошибка, персонаж не найден!!!");
+          }
         } else {
-          dispatch(reducerActionCreators.getCharacters([]));
-          throw new Error("Ошибка, персонаж не найден!!!");
+          const response = await getPage();
+          response && dispatch(reducerActionCreators.getCharacters(response));
+          // dispatch(reducerActionCreators.getFiltredCount(0));
         }
 
         setLoading(false);
@@ -56,8 +134,8 @@ function useFetchData() {
         setError(e.message);
       }
     };
-    fetchData();
-  }, [name, status, gender, page, dispatch]);
+    fetchCurrPageData();
+  }, [dispatch, filtredCount, gender, name, numOfCharacters, page, status]);
   return [error, loading];
 }
 

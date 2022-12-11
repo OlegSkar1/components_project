@@ -4,7 +4,8 @@ import { useMyContext } from "hook/useMyContext";
 import { reducerActionCreators } from "reducer/action-creators";
 
 function ResetSortButton() {
-  const { dispatch } = useMyContext();
+  const { dispatch, state } = useMyContext();
+  const { gender, status } = state;
 
   const resetHandler = () => {
     dispatch(reducerActionCreators.setStatus(""));

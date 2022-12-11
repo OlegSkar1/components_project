@@ -11,20 +11,22 @@ export interface MyState {
   products: IProduct[];
   characters: Character[];
   info: MyInfo | undefined;
-  query: string;
   status: string;
   gender: string;
   page: number;
+  count: number;
+  filtredCount: number;
 }
 
 export enum MyStateActionEnum {
   ADD_PRODUCT = "ADD_PRODUCT",
   GET_CHARACTERS = "GET_CHARACTERS",
   GET_INFO = "GET_INFO",
-  QUERY = "QUERY",
   STATUS = "STATUS",
   GENDER = "GENDER",
   PAGE = "PAGE",
+  COUNT = "COUNT",
+  FILTRED_COUNT = "FILTRED_COUNT",
 }
 
 export interface addProductAction {
@@ -41,11 +43,6 @@ export interface getInfoAction {
   payload: MyInfo | undefined;
 }
 
-export interface queryAction {
-  type: MyStateActionEnum.QUERY;
-  payload: string;
-}
-
 export interface statusAction {
   type: MyStateActionEnum.STATUS;
   payload: string;
@@ -59,12 +56,21 @@ export interface pageAction {
   type: MyStateActionEnum.PAGE;
   payload: number;
 }
+export interface countAction {
+  type: MyStateActionEnum.COUNT;
+  payload: number;
+}
+export interface filtredCountAction {
+  type: MyStateActionEnum.FILTRED_COUNT;
+  payload: number;
+}
 
 export type aggregateAction =
   | addProductAction
   | getCharactersAction
   | getInfoAction
-  | queryAction
   | statusAction
   | genderAction
-  | pageAction;
+  | pageAction
+  | countAction
+  | filtredCountAction;

@@ -2,13 +2,14 @@ import { IProduct } from "models";
 import { Character } from "rickmortyapi/dist/interfaces";
 import {
   addProductAction,
+  countAction,
+  filtredCountAction,
   genderAction,
   getCharactersAction,
   getInfoAction,
   MyInfo,
   MyStateActionEnum,
   pageAction,
-  queryAction,
   statusAction,
 } from "./types";
 
@@ -25,10 +26,12 @@ export const reducerActionCreators = {
     type: MyStateActionEnum.GET_INFO,
     payload,
   }),
-  setQuery: (payload: string): queryAction => ({
-    type: MyStateActionEnum.QUERY,
+
+  getCount: (payload: number): countAction => ({
+    type: MyStateActionEnum.COUNT,
     payload,
   }),
+
   setStatus: (payload: string): statusAction => ({
     type: MyStateActionEnum.STATUS,
     payload,
@@ -39,6 +42,10 @@ export const reducerActionCreators = {
   }),
   setPage: (payload: number): pageAction => ({
     type: MyStateActionEnum.PAGE,
+    payload,
+  }),
+  getFiltredCount: (payload: number): filtredCountAction => ({
+    type: MyStateActionEnum.FILTRED_COUNT,
     payload,
   }),
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import CharacterCard from "./Character";
 import SearchBar from "./SearchBar";
 import Loading from "./Loading";
@@ -6,12 +6,18 @@ import { useFetchData } from "hook/useFetchData";
 import { useMyContext } from "hook/useMyContext";
 import AccordionSort from "./AccordionSort";
 import ResetSortButton from "./ResetSortButton";
-import MyPagination from "./MyPagination";
+import MyPagination, { numbersEnumCharacters } from "./MyPagination";
+import SelectElems from "./SelectElems";
 
 export default function Home() {
+  const [numOfCharacters, setNumOfCharacters] = useState(20);
   const { state } = useMyContext();
-  const [error, loading] = useFetchData();
-  const { characters } = state;
+  const [error, loading] = useFetchData({ numOfCharacters });
+  const { characters, page } = state;
+
+  const changeNumOfCharacters = (value: number) => {
+    setNumOfCharacters(value);
+  };
 
   return (
     <div data-testid="Home-page">
@@ -19,6 +25,7 @@ export default function Home() {
         <SearchBar />
         <AccordionSort />
         <ResetSortButton />
+        <SelectElems changeNumOfCharacters={changeNumOfCharacters} />
       </div>
 
       {loading && <Loading />}
@@ -35,7 +42,7 @@ export default function Home() {
           <CharacterCard character={character} key={character.id} />
         ))}
       </div>
-      <MyPagination />
+      <MyPagination numOfCharacters={numOfCharacters} />
     </div>
   );
 }
