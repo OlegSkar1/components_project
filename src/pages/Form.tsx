@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
-import Card from "./Card";
-import SuccessAlert from "./SuccessAlert";
+import Card from "../components/Card";
+import SuccessAlert from "../components/SuccessAlert";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { reducerActionCreators } from "reducer/action-creators";
 import { useMyContext } from "hook/useMyContext";

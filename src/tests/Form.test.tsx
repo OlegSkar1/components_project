@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Form from "../components/Form";
+import Form from "../pages/Form";
 import { ContextState } from "../context";
 import SuccessAlert from "../components/SuccessAlert";
 

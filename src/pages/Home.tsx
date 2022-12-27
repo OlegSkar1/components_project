@@ -1,19 +1,20 @@
-import React, { useState, useEffect, useCallback } from "react";
-import CharacterCard from "./Character";
-import SearchBar from "./SearchBar";
-import Loading from "./Loading";
+import React, { useState } from "react";
+import CharacterCard from "../components/Character";
+import SearchBar from "../components/SearchBar";
+import Loading from "../components/Loading";
 import { useFetchData } from "hook/useFetchData";
 import { useMyContext } from "hook/useMyContext";
-import AccordionSort from "./AccordionSort";
-import ResetSortButton from "./ResetSortButton";
-import MyPagination, { numbersEnumCharacters } from "./MyPagination";
-import SelectElems from "./SelectElems";
+import AccordionSort from "../components/AccordionSort";
+import ResetSortButton from "../components/ResetSortButton";
+import MyPagination from "../components/MyPagination";
+import SelectElems from "../components/SelectElems";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const [numOfCharacters, setNumOfCharacters] = useState(20);
   const { state } = useMyContext();
   const [error, loading] = useFetchData({ numOfCharacters });
-  const { characters, page } = state;
+  const { characters } = state;
 
   const changeNumOfCharacters = (value: number) => {
     setNumOfCharacters(value);

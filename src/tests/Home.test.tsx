@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Home from "components/Home";
+import Home from "pages/Home";
 import axios from "axios";
 import MockCharacterData from "./__mocks__/MockCharacterData";
 
