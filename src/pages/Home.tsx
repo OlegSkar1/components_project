@@ -8,7 +8,7 @@ import AccordionSort from "../components/AccordionSort";
 import ResetSortButton from "../components/ResetSortButton";
 import MyPagination from "../components/MyPagination";
 import SelectElems from "../components/SelectElems";
-import { Link } from "react-router-dom";
+import { ErrorMessage } from "components/ErrorMessage";
 
 export default function Home() {
   const [numOfCharacters, setNumOfCharacters] = useState(20);
@@ -30,14 +30,7 @@ export default function Home() {
       </div>
 
       {loading && <Loading />}
-      {error && (
-        <p
-          data-testid="error"
-          className="text-center mt-10 text-red-600 text-lg"
-        >
-          {error}
-        </p>
-      )}
+      <ErrorMessage error={error} />
       <div className="flex flex-wrap justify-center gap-3 mt-4">
         {characters.map((character) => (
           <CharacterCard character={character} key={character.id} />

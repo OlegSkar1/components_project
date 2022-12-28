@@ -6,6 +6,8 @@ import Home from "pages/Home";
 import Layout from "components/Layout";
 import Form from "pages/Form";
 import CharacterPage from "pages/CharacterPage";
+import { FirstEpisode } from "pages/FirstEpisode";
+import { CurrLocation } from "pages/CurrLocation";
 
 function AppRouter() {
   return (
@@ -14,7 +16,9 @@ function AppRouter() {
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="form" element={<Form />} />
-        <Route path="/:id" element={<CharacterPage />} />
+        <Route path="character/:id" element={<CharacterPage />} />
+        <Route path="episode/:id" element={<FirstEpisode />} />
+        <Route path="location/:id" element={<CurrLocation />} />
       </Route>
       <Route path="*" element={<ErrorPage />} />
     </Routes>

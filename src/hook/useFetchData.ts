@@ -9,7 +9,7 @@ interface Props {
   numOfCharacters: number;
 }
 
-function useFetchData({ numOfCharacters }: Props) {
+function useFetchData({ numOfCharacters }: Props): [string, boolean] {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { state, dispatch } = useMyContext();
@@ -124,7 +124,6 @@ function useFetchData({ numOfCharacters }: Props) {
         } else {
           const response = await getPage();
           response && dispatch(reducerActionCreators.getCharacters(response));
-          // dispatch(reducerActionCreators.getFiltredCount(0));
         }
 
         setLoading(false);
