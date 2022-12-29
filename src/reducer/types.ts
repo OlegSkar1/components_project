@@ -11,6 +11,7 @@ export interface MyState {
   products: IProduct[];
   characters: Character[];
   info: MyInfo | undefined;
+  name: string;
   status: string;
   gender: string;
   page: number;
@@ -22,6 +23,7 @@ export enum MyStateActionEnum {
   ADD_PRODUCT = "ADD_PRODUCT",
   GET_CHARACTERS = "GET_CHARACTERS",
   GET_INFO = "GET_INFO",
+  NAME = "NAME",
   STATUS = "STATUS",
   GENDER = "GENDER",
   PAGE = "PAGE",
@@ -41,6 +43,11 @@ export interface getCharactersAction {
 export interface getInfoAction {
   type: MyStateActionEnum.GET_INFO;
   payload: MyInfo | undefined;
+}
+
+export interface nameAction {
+  type: MyStateActionEnum.NAME;
+  payload: string;
 }
 
 export interface statusAction {
@@ -69,6 +76,7 @@ export type aggregateAction =
   | addProductAction
   | getCharactersAction
   | getInfoAction
+  | nameAction
   | statusAction
   | genderAction
   | pageAction

@@ -1,15 +1,5 @@
+import { initialState } from "context";
 import { aggregateAction, MyState, MyStateActionEnum } from "./types";
-
-export const initialState: MyState = {
-  characters: [],
-  info: undefined,
-  products: [],
-  status: "",
-  gender: "",
-  page: 1,
-  count: 0,
-  filtredCount: 0,
-};
 
 export default (state = initialState, action: aggregateAction): MyState => {
   switch (action.type) {
@@ -21,7 +11,8 @@ export default (state = initialState, action: aggregateAction): MyState => {
       return { ...state, info: action.payload };
     case MyStateActionEnum.COUNT:
       return { ...state, count: action.payload };
-
+    case MyStateActionEnum.NAME:
+      return { ...state, name: action.payload };
     case MyStateActionEnum.STATUS:
       return { ...state, status: action.payload };
     case MyStateActionEnum.GENDER:

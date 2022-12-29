@@ -4,6 +4,7 @@ import { getCharacters } from "rickmortyapi";
 import { Character } from "rickmortyapi/dist/interfaces";
 import { useMyContext } from "./useMyContext";
 import _ from "lodash";
+import { useSearchParams } from "react-router-dom";
 
 interface Props {
   numOfCharacters: number;
@@ -13,19 +14,26 @@ function useFetchData({ numOfCharacters }: Props): [string, boolean] {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { state, dispatch } = useMyContext();
-  const { status, gender, page, filtredCount } = state;
+  const { name, status, gender, page, filtredCount } = state;
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const name: string = JSON.parse(localStorage.getItem("search") as string)
-    .trim()
-    .toLowerCase();
+  const queryName = searchParams.get("name") || "";
+  const queryGender = searchParams.get("gender") || "";
+  const queryStatus = searchParams.get("status") || "";
 
   useEffect(() => {
     const fetchFiltredChunks = async (currPage = 1) => {
       const filtredData = await getCharacters({
+        name: queryName,
+        gender: queryGender,
+        status: queryStatus,
+        page: currPage,
+      });
+
+      setSearchParams({
         name,
         gender,
         status,
-        page: currPage,
       });
       return filtredData;
     };
@@ -134,7 +142,19 @@ function useFetchData({ numOfCharacters }: Props): [string, boolean] {
       }
     };
     fetchCurrPageData();
-  }, [dispatch, filtredCount, gender, name, numOfCharacters, page, status]);
+  }, [
+    dispatch,
+    filtredCount,
+    gender,
+    name,
+    numOfCharacters,
+    page,
+    queryGender,
+    queryName,
+    queryStatus,
+    setSearchParams,
+    status,
+  ]);
   return [error, loading];
 }
 

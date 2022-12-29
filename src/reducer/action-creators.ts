@@ -9,6 +9,7 @@ import {
   getInfoAction,
   MyInfo,
   MyStateActionEnum,
+  nameAction,
   pageAction,
   statusAction,
 } from "./types";
@@ -32,10 +33,16 @@ export const reducerActionCreators = {
     payload,
   }),
 
+  setName: (payload: string): nameAction => ({
+    type: MyStateActionEnum.NAME,
+    payload,
+  }),
+
   setStatus: (payload: string): statusAction => ({
     type: MyStateActionEnum.STATUS,
     payload,
   }),
+
   setGender: (payload: string): genderAction => ({
     type: MyStateActionEnum.GENDER,
     payload,

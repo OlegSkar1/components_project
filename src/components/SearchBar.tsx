@@ -1,17 +1,23 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import useLocalStorage from "hook/useLocalStorage";
 import { reducerActionCreators } from "reducer/action-creators";
 import { useMyContext } from "hook/useMyContext";
+import { useSearchParams } from "react-router-dom";
 
 export default function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { dispatch } = useMyContext();
+  const [searchParams] = useSearchParams();
+  const queryName = searchParams.get("name") || "";
+  const [name, setName] = useState(queryName);
 
-  const [search, setSearch] = useLocalStorage("", "search");
+  const [search, setSearch] = useLocalStorage(queryName, "search");
 
   const handleChange = () => {
     if (inputRef.current) {
-      setSearch(inputRef.current.value);
+      const name = inputRef.current.value;
+      setSearch(name);
+      setName(name);
     }
   };
 
@@ -19,6 +25,7 @@ export default function SearchBar() {
     e.preventDefault();
     if (inputRef.current) {
       dispatch(reducerActionCreators.setPage(1));
+      dispatch(reducerActionCreators.setName(search));
     }
   };
 
@@ -53,7 +60,7 @@ export default function SearchBar() {
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Search"
           onChange={handleChange}
-          value={search}
+          value={name}
           ref={inputRef}
         />
       </div>

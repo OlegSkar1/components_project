@@ -9,6 +9,7 @@ import ResetSortButton from "../components/ResetSortButton";
 import MyPagination from "../components/MyPagination";
 import SelectElems from "../components/SelectElems";
 import { ErrorMessage } from "components/ErrorMessage";
+import { useSearchParams } from "react-router-dom";
 
 export default function Home() {
   const [numOfCharacters, setNumOfCharacters] = useState(20);

@@ -16,9 +16,8 @@ interface Props {
 
 function MyPagination({ numOfCharacters }: Props) {
   const { state, dispatch } = useMyContext();
-  const name: string = JSON.parse(localStorage.getItem("search") as string);
 
-  const { info, page, gender, status, count, filtredCount } = state;
+  const { info, page, gender, status, count, filtredCount, name } = state;
 
   useEffect(() => {
     const getCountPages = () => {
