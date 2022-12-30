@@ -22,6 +22,12 @@ function useFetchData({ numOfCharacters }: Props): [string, boolean] {
   const queryStatus = searchParams.get("status") || "";
 
   useEffect(() => {
+    setSearchParams({
+      name,
+      gender,
+      status,
+    });
+
     const fetchFiltredChunks = async (currPage = 1) => {
       const filtredData = await getCharacters({
         name: queryName,
@@ -30,11 +36,6 @@ function useFetchData({ numOfCharacters }: Props): [string, boolean] {
         page: currPage,
       });
 
-      setSearchParams({
-        name,
-        gender,
-        status,
-      });
       return filtredData;
     };
 
