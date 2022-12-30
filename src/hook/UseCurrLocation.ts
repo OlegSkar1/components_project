@@ -7,7 +7,8 @@ type CurrLocation = [
   navigate: NavigateFunction,
   charLocation: Location | undefined,
   isLoading: boolean,
-  error: string
+  error: string,
+  charactersIds: number[]
 ];
 
 export const UseCurrLocation = (): CurrLocation => {
@@ -16,12 +17,14 @@ export const UseCurrLocation = (): CurrLocation => {
   const [charLocation, setCharLocation] = useState<Location>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [charactersIds, setCharactersIds] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const fetch = await getLocation(Number(id));
         setCharLocation(fetch.data);
+
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
@@ -31,5 +34,23 @@ export const UseCurrLocation = (): CurrLocation => {
     };
     fetchData();
   }, [id]);
-  return [navigate, charLocation, isLoading, error];
+
+  useEffect(() => {
+    const fetchChars = async () => {
+      try {
+        const regExp = /(\d+$)/gs;
+
+        if (charLocation) {
+          const charIds = charLocation.residents.map((char) => {
+            const id = char.toString().match(regExp)?.join("");
+            return Number(id);
+          });
+
+          setCharactersIds(charIds);
+        }
+      } catch (error) {}
+    };
+    fetchChars();
+  }, [charLocation]);
+  return [navigate, charLocation, isLoading, error, charactersIds];
 };

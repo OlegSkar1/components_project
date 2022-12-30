@@ -30,8 +30,10 @@ function CharacterPage() {
         </div>
 
         <div>
-          <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-100 md:text-5xl lg:text-6xl dark:text-white">
-            {character?.name}
+          <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
+            <span className="text-transparent bg-clip-text bg-gradient-to-bl from-purple-600 to-blue-500">
+              {character?.name}
+            </span>
           </h1>
 
           <div className="flex items-center mb-2">
