@@ -11,7 +11,7 @@ function CharacterPage() {
     useFetchCharPage();
 
   return (
-    <div className="sm:p-20 bg-slate-900 rounded">
+    <div data-testid="CharacterPage" className="sm:p-20 bg-slate-900 rounded">
       {isLoading && (
         <div className="absolute top-20 left-1/2 -translate-x-1/2">
           <Loading />
@@ -30,7 +30,10 @@ function CharacterPage() {
         </div>
 
         <div>
-          <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
+          <h1
+            role={"heading"}
+            className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 dark:text-white md:text-5xl lg:text-6xl"
+          >
             <span className="text-transparent bg-clip-text bg-gradient-to-bl from-purple-600 to-blue-500">
               {character?.name}
             </span>

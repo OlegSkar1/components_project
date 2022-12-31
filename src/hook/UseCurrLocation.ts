@@ -48,7 +48,11 @@ export const UseCurrLocation = (): CurrLocation => {
 
           setCharactersIds(charIds);
         }
-      } catch (error) {}
+      } catch (error) {
+        setIsLoading(false);
+        const e = error as Error;
+        setError(e.message);
+      }
     };
     fetchChars();
   }, [charLocation]);

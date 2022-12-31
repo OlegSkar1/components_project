@@ -8,11 +8,12 @@ interface CharacterProps {
 
 const CharacterCard = ({ character }: CharacterProps) => {
   return (
-    <Link to={`/character/${character.id}`} className="flex">
-      <div
-        data-testid="character-item"
-        className="flex flex-col items-center text-center justify-between p-6 max-w-[280px] bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
-      >
+    <Link
+      data-testid="character-item"
+      to={`/character/${character.id}`}
+      className="flex"
+    >
+      <div className="flex flex-col items-center text-center justify-between p-6 max-w-[280px] bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
         <img src={character.image} className="w-1/2 " alt={character.name} />
 
         <p className="font-bold pb-2">{character.name}</p>

@@ -43,24 +43,27 @@ export const CurrLocation: React.FC = () => {
         </div>
       )}
       <ErrorMessage error={error} />
-      <ErrorMessage error={charError} />
-      <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-100 md:text-5xl lg:text-6xl dark:text-white">
+      <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none  md:text-5xl lg:text-6xl bg-gradient-to-bl from-purple-600 to-blue-500 text-transparent bg-clip-text">
         {charLocation?.name}
       </h1>
-      <span className="text-xl text-gray-100">type:</span>{" "}
-      <span className="mb-3 text-gray-100 font-light text-xl">
-        {charLocation?.type}
-      </span>
-      <span className="text-xl text-gray-100 ml-10">dimension:</span>{" "}
-      <span className="mb-3 text-gray-100 font-light text-xl">
-        {charLocation?.dimension}
-      </span>
+      <div className="mb-4">
+        <span className=" text-xl text-gray-100">type:</span>{" "}
+        <span className="text-gray-100 font-light text-xl">
+          {charLocation?.type}
+        </span>
+        <span className="text-xl text-gray-100 ml-10">dimension:</span>{" "}
+        <span className="text-gray-100 font-light text-xl">
+          {charLocation?.dimension}
+        </span>
+      </div>
+
+      <GoBackButton navigate={navigate} />
+      <ErrorMessage error={charError} />
       <div className="flex flex-wrap justify-center gap-3 mt-4 mb-4">
         {characters.map((character) => (
           <CharacterCard character={character} key={character.id} />
         ))}
       </div>
-      <GoBackButton navigate={navigate} />
     </div>
   );
 };
