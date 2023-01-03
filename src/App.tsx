@@ -1,13 +1,17 @@
 import React, { Component } from "react";
 import AppRouter from "AppRouter";
 import { ContextState } from "./context";
+import { Provider } from "react-redux";
+import { store } from "store";
 
 class App extends Component {
   render() {
     return (
-      <ContextState>
-        <AppRouter />
-      </ContextState>
+      <Provider store={store}>
+        <ContextState>
+          <AppRouter />
+        </ContextState>
+      </Provider>
     );
   }
 }

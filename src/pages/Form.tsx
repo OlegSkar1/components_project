@@ -2,8 +2,8 @@ import React, { useRef, useEffect } from "react";
 import Card from "../components/Card";
 import SuccessAlert from "../components/SuccessAlert";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { reducerActionCreators } from "reducer/action-creators";
-import { useMyContext } from "hook/useMyContext";
+import { useTypedSelector } from "hook/useTypedSelector";
+import { useActions } from "hook/useActions";
 
 const fileReader = new FileReader();
 
@@ -72,23 +72,24 @@ function Form() {
     },
   });
 
-  const { state, dispatch } = useMyContext();
+  const { addProduct } = useActions();
+
+  const { products } = useTypedSelector((state) => state.products);
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     const id = Date.now();
 
     fileReader.onloadend = () => {
       const imageSrc = fileReader.result as string;
-      dispatch(
-        reducerActionCreators.addProduct({
-          id,
-          title: data.title,
-          price: Number(data.price),
-          description: data.description,
-          category: data.category,
-          image: imageSrc,
-        })
-      );
+
+      addProduct({
+        id,
+        title: data.title,
+        price: Number(data.price),
+        description: data.description,
+        category: data.category,
+        image: imageSrc,
+      });
     };
 
     fileReader.readAsDataURL(imageRef.current?.files?.item(0) as File);
@@ -303,10 +304,9 @@ function Form() {
       </form>
       <SuccessAlert isSubmitted={isSubmitted} />
       <div className="flex flex-wrap justify-center gap-3 mt-4">
-        {state.products &&
-          state.products.map((product) => (
-            <Card key={product.id} product={product} />
-          ))}
+        {products.map((product) => (
+          <Card key={product.id} product={product} />
+        ))}
       </div>
     </div>
   );
