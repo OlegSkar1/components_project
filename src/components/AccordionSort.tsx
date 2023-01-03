@@ -9,8 +9,9 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useMyContext } from "hook/useMyContext";
-import { reducerActionCreators } from "reducer/action-creators";
+import { useTypedSelector } from "hook/useTypedSelector";
+import { useActions } from "hook/useActions";
+import { useSearchParams } from "react-router-dom";
 
 enum statusEnum {
   ALIVE = "Alive",
@@ -25,11 +26,17 @@ enum genderEnum {
 }
 
 function AccordionSort() {
-  const { state, dispatch } = useMyContext();
-  const { status, gender } = state;
+  const { status, gender } = useTypedSelector((state) => state.characters);
 
-  const [statusValue, setStatusValue] = useState("");
-  const [genderValue, setGenderValue] = useState("");
+  const { setPage, setStatus, setGender } = useActions();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const queryGender = searchParams.get("gender") || "";
+  const queryStatus = searchParams.get("status") || "";
+
+  const [statusValue, setStatusValue] = useState(queryStatus);
+  const [genderValue, setGenderValue] = useState(queryGender);
 
   useEffect(() => {
     if (!status && !gender) {
@@ -45,8 +52,8 @@ function AccordionSort() {
         case statusEnum.DEAD:
           {
             setStatusValue(e.target.value);
-            dispatch(reducerActionCreators.setPage(1));
-            dispatch(reducerActionCreators.setStatus(e.target.value));
+            setPage(1);
+            setStatus(e.target.value);
           }
           break;
         case genderEnum.MALE:
@@ -54,22 +61,22 @@ function AccordionSort() {
         case genderEnum.GENDERLESS:
           {
             setGenderValue(e.target.value);
-            dispatch(reducerActionCreators.setPage(1));
-            dispatch(reducerActionCreators.setGender(e.target.value));
+            setPage(1);
+            setGender(e.target.value);
           }
           break;
       }
 
       if (e.target.id === "statusUnknown") {
         setStatusValue(e.target.value);
-        dispatch(reducerActionCreators.setPage(1));
-        dispatch(reducerActionCreators.setStatus(e.target.value));
+        setPage(1);
+        setStatus(e.target.value);
       }
 
       if (e.target.id === "genderUnknown") {
         setGenderValue(e.target.value);
-        dispatch(reducerActionCreators.setPage(1));
-        dispatch(reducerActionCreators.setGender(e.target.value));
+        setPage(1);
+        setGender(e.target.value);
       }
     }
   };

@@ -1,15 +1,14 @@
 import React from "react";
 import { Button } from "@mui/material";
-import { useMyContext } from "hook/useMyContext";
-import { reducerActionCreators } from "reducer/action-creators";
+import { useActions } from "hook/useActions";
 
 function ResetSortButton() {
-  const { dispatch } = useMyContext();
+  const { setGender, setStatus, setPage } = useActions();
 
   const resetHandler = () => {
-    dispatch(reducerActionCreators.setStatus(""));
-    dispatch(reducerActionCreators.setGender(""));
-    dispatch(reducerActionCreators.setPage(1));
+    setStatus("");
+    setGender("");
+    setPage(1);
   };
 
   return (

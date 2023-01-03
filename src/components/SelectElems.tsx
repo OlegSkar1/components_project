@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useMyContext } from "hook/useMyContext";
-import { reducerActionCreators } from "reducer/action-creators";
+import { useActions } from "hook/useActions";
 
 interface Props {
   changeNumOfCharacters: (value: number) => void;
@@ -11,7 +10,7 @@ interface Props {
 
 export default function SelectElems({ changeNumOfCharacters }: Props) {
   const [elems, setElems] = useState("20");
-  const { dispatch } = useMyContext();
+  const { setPage } = useActions();
 
   const handleChange = (event: SelectChangeEvent) => {
     setElems(event.target.value);
@@ -19,8 +18,7 @@ export default function SelectElems({ changeNumOfCharacters }: Props) {
 
   useEffect(() => {
     changeNumOfCharacters(Number(elems));
-    dispatch(reducerActionCreators.setPage(1));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setPage(1);
   }, [elems]);
 
   return (

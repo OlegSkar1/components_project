@@ -1,31 +1,38 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import useLocalStorage from "hook/useLocalStorage";
-import { reducerActionCreators } from "reducer/action-creators";
-import { useMyContext } from "hook/useMyContext";
 import { useSearchParams } from "react-router-dom";
+import { useActions } from "hook/useActions";
 
 export default function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { dispatch } = useMyContext();
-  const [searchParams] = useSearchParams();
+  const { setName, setPage } = useActions();
+  const [searchParams, setSearchParams] = useSearchParams();
   const queryName = searchParams.get("name") || "";
-  const [name, setName] = useState(queryName);
+  const [searchName, setSearchName] = useState(queryName);
 
   const [search, setSearch] = useLocalStorage(queryName, "search");
+
+  useEffect(() => {
+    setName(queryName);
+  }, []);
 
   const handleChange = () => {
     if (inputRef.current) {
       const name = inputRef.current.value;
       setSearch(name);
-      setName(name);
+      setSearchName(name);
     }
   };
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (inputRef.current) {
-      dispatch(reducerActionCreators.setPage(1));
-      dispatch(reducerActionCreators.setName(search));
+      setPage(1);
+      setName(searchName);
+      setSearchParams((prev) => ({
+        ...prev,
+        name: searchName,
+      }));
     }
   };
 
@@ -60,7 +67,7 @@ export default function SearchBar() {
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Search"
           onChange={handleChange}
-          value={name}
+          value={searchName}
           ref={inputRef}
         />
       </div>

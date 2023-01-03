@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { Pagination } from "@mui/material";
 import { useMyContext } from "hook/useMyContext";
 import { reducerActionCreators } from "reducer/action-creators";
+import { useTypedSelector } from "hook/useTypedSelector";
+import { useActions } from "hook/useActions";
 
 export enum numbersEnumCharacters {
   FIVE = 5,
@@ -15,9 +17,10 @@ interface Props {
 }
 
 function MyPagination({ numOfCharacters }: Props) {
-  const { state, dispatch } = useMyContext();
+  const { name, gender, status, filtredCount, info, count, page } =
+    useTypedSelector((state) => state.characters);
 
-  const { info, page, gender, status, count, filtredCount, name } = state;
+  const { getCount, setPage } = useActions();
 
   useEffect(() => {
     const getCountPages = () => {
@@ -33,15 +36,15 @@ function MyPagination({ numOfCharacters }: Props) {
     const countPages = getCountPages();
 
     if (countPages) {
-      dispatch(reducerActionCreators.getCount(countPages));
-    } else dispatch(reducerActionCreators.getCount(0));
-  }, [dispatch, filtredCount, gender, info, name, numOfCharacters, status]);
+      getCount(countPages);
+    } else getCount(0);
+  }, [filtredCount, gender, info, name, numOfCharacters, status]);
 
   return (
     <>
       {count > 1 && (
         <Pagination
-          onChange={(_, num) => dispatch(reducerActionCreators.setPage(num))}
+          onChange={(_, num) => setPage(num)}
           count={count}
           page={page}
           color={"primary"}

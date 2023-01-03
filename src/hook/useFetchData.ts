@@ -1,25 +1,50 @@
-import { useEffect, useState } from "react";
-import { reducerActionCreators } from "reducer/action-creators";
+import { useEffect } from "react";
 import { getCharacters } from "rickmortyapi";
 import { Character } from "rickmortyapi/dist/interfaces";
-import { useMyContext } from "./useMyContext";
 import _ from "lodash";
 import { useSearchParams } from "react-router-dom";
+import { useActions } from "./useActions";
+import { useTypedSelector } from "./useTypedSelector";
 
 interface Props {
   numOfCharacters: number;
 }
 
-function useFetchData({ numOfCharacters }: Props): [string, boolean] {
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { state, dispatch } = useMyContext();
-  const { name, status, gender, page, filtredCount } = state;
+function useFetchData({
+  numOfCharacters,
+}: Props): [string | null, boolean, Character[]] {
+  const {
+    getInfo,
+    getFiltredCount,
+    getCharactersSuccess,
+    getCharactersError,
+    fetchCharacters,
+    setGender,
+    setName,
+    setStatus,
+  } = useActions();
+
+  const {
+    error,
+    filtredCount,
+    gender,
+    loading,
+    name,
+    page,
+    status,
+    characters,
+  } = useTypedSelector((state) => state.characters);
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const queryName = searchParams.get("name") || "";
   const queryGender = searchParams.get("gender") || "";
   const queryStatus = searchParams.get("status") || "";
+
+  useEffect(() => {
+    setGender(queryGender);
+    setStatus(queryStatus);
+  }, []);
 
   useEffect(() => {
     setSearchParams({
@@ -30,9 +55,9 @@ function useFetchData({ numOfCharacters }: Props): [string, boolean] {
 
     const fetchFiltredChunks = async (currPage = 1) => {
       const filtredData = await getCharacters({
-        name: queryName,
-        gender: queryGender,
-        status: queryStatus,
+        name,
+        gender,
+        status,
         page: currPage,
       });
 
@@ -57,14 +82,14 @@ function useFetchData({ numOfCharacters }: Props): [string, boolean] {
         }
 
         if (filtredCount !== infoData.count) {
-          dispatch(reducerActionCreators.getFiltredCount(infoData.count));
+          getFiltredCount(infoData.count);
         }
 
         const resultChunks = _.chunk(chunks, numOfCharacters);
 
         return resultChunks;
       } else if (filtredData.status === 404) {
-        dispatch(reducerActionCreators.getFiltredCount(0));
+        getFiltredCount(0);
       }
     };
 
@@ -89,7 +114,7 @@ function useFetchData({ numOfCharacters }: Props): [string, boolean] {
 
         dataResults && chunks.push(...dataResults);
 
-        dispatch(reducerActionCreators.getInfo(dataInfo));
+        getInfo(dataInfo);
 
         if (dataResults && dataInfo) {
           for (let i = 2; i <= dataInfo.pages; i++) {
@@ -117,46 +142,29 @@ function useFetchData({ numOfCharacters }: Props): [string, boolean] {
 
     const fetchCurrPageData = async () => {
       try {
-        setError("");
-        setLoading(true);
+        fetchCharacters();
 
-        if (name || gender || status) {
+        if (queryName || queryGender || queryStatus) {
           const filtredResponse = await fetchFiltredData();
 
-          filtredResponse &&
-            dispatch(reducerActionCreators.getCharacters(filtredResponse));
+          filtredResponse && getCharactersSuccess(filtredResponse);
 
           if (!filtredResponse) {
-            dispatch(reducerActionCreators.getCharacters([]));
-            throw new Error("Ошибка, персонаж не найден!!!");
+            getCharactersError("Ошибка, персонаж не найден!!!");
           }
         } else {
           const response = await getPage();
-          response && dispatch(reducerActionCreators.getCharacters(response));
+          console.log("test");
+          response && getCharactersSuccess(response);
         }
-
-        setLoading(false);
       } catch (error) {
-        setLoading(false);
         const e = error as Error;
-        setError(e.message);
+        getCharactersError(e.message);
       }
     };
     fetchCurrPageData();
-  }, [
-    dispatch,
-    filtredCount,
-    gender,
-    name,
-    numOfCharacters,
-    page,
-    queryGender,
-    queryName,
-    queryStatus,
-    setSearchParams,
-    status,
-  ]);
-  return [error, loading];
+  }, [filtredCount, numOfCharacters, page, name, gender, status]);
+  return [error, loading, characters];
 }
 
 export { useFetchData };

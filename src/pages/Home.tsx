@@ -12,9 +12,8 @@ import { ErrorMessage } from "components/ErrorMessage";
 
 export default function Home() {
   const [numOfCharacters, setNumOfCharacters] = useState(20);
-  const { state } = useMyContext();
-  const [error, loading] = useFetchData({ numOfCharacters });
-  const { characters } = state;
+  // const { state } = useMyContext();
+  const [error, loading, characters] = useFetchData({ numOfCharacters });
 
   const changeNumOfCharacters = (value: number) => {
     setNumOfCharacters(value);
@@ -30,7 +29,7 @@ export default function Home() {
       </div>
 
       {loading && <Loading />}
-      <ErrorMessage error={error} />
+      {error && <ErrorMessage error={error} />}
       <div className="flex flex-wrap justify-center gap-3 mt-4">
         {characters.map((character) => (
           <CharacterCard character={character} key={character.id} />
