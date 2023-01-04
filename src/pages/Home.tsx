@@ -3,7 +3,6 @@ import CharacterCard from "../components/Character";
 import SearchBar from "../components/SearchBar";
 import Loading from "../components/Loading";
 import { useFetchData } from "hook/useFetchData";
-import { useMyContext } from "hook/useMyContext";
 import AccordionSort from "../components/AccordionSort";
 import ResetSortButton from "../components/ResetSortButton";
 import MyPagination from "../components/MyPagination";
@@ -12,7 +11,7 @@ import { ErrorMessage } from "components/ErrorMessage";
 
 export default function Home() {
   const [numOfCharacters, setNumOfCharacters] = useState(20);
-  // const { state } = useMyContext();
+
   const [error, loading, characters] = useFetchData({ numOfCharacters });
 
   const changeNumOfCharacters = (value: number) => {

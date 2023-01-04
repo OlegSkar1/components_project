@@ -19,6 +19,7 @@ export default function SelectElems({ changeNumOfCharacters }: Props) {
   useEffect(() => {
     changeNumOfCharacters(Number(elems));
     setPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elems]);
 
   return (

@@ -11,7 +11,6 @@ import React, { useEffect, useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useTypedSelector } from "hook/useTypedSelector";
 import { useActions } from "hook/useActions";
-import { useSearchParams } from "react-router-dom";
 
 enum statusEnum {
   ALIVE = "Alive",
@@ -30,18 +29,16 @@ function AccordionSort() {
 
   const { setPage, setStatus, setGender } = useActions();
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const queryGender = searchParams.get("gender") || "";
-  const queryStatus = searchParams.get("status") || "";
-
-  const [statusValue, setStatusValue] = useState(queryStatus);
-  const [genderValue, setGenderValue] = useState(queryGender);
+  const [statusValue, setStatusValue] = useState("");
+  const [genderValue, setGenderValue] = useState("");
 
   useEffect(() => {
     if (!status && !gender) {
       setStatusValue("");
       setGenderValue("");
+    } else {
+      setStatusValue(status);
+      setGenderValue(gender);
     }
   }, [status, gender]);
 
@@ -112,17 +109,19 @@ function AccordionSort() {
                 onChange={handleChange}
               >
                 <FormControlLabel
-                  id="status-radio"
+                  id="alive"
                   value="Alive"
                   control={<Radio />}
                   label="Alive"
                 />
                 <FormControlLabel
+                  id="dead"
                   value="Dead"
                   control={<Radio />}
                   label="Dead"
                 />
                 <FormControlLabel
+                  id="unknown"
                   value="unknown"
                   control={<Radio id="statusUnknown" />}
                   label="Unknown"

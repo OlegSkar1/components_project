@@ -17,7 +17,6 @@ function CharacterPage() {
           <Loading />
         </div>
       )}
-      <ErrorMessage error={error} />
 
       <div className="flex lg:justify-start justify-center sm:flex-wrap flex-wrap items-start lg:max-w-3xl min-w-fit sm:max-w-min gap-x-10 bg-slate-700  rounded mx-auto sm:p-4">
         <div>
@@ -29,40 +28,44 @@ function CharacterPage() {
           <GoBackButton navigate={navigate} />
         </div>
 
-        <div>
-          <h1
-            role={"heading"}
-            className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 dark:text-white md:text-5xl lg:text-6xl"
-          >
-            <span className="text-transparent bg-clip-text bg-gradient-to-bl from-purple-600 to-blue-500">
-              {character?.name}
-            </span>
-          </h1>
-
-          <div className="flex items-center mb-2">
-            {character && <ImacIcons status={character.status} />}
-            <span className="font-medium text-gray-100">{`${character?.status} - ${character?.species}`}</span>
-          </div>
-
-          <div className="font-normal text-lg">
-            <p className="text-gray-400">Last known location:</p>
-            <Link
-              to={`/location/${location?.id}`}
-              className="text-gray-100 pb-2 hover:text-yellow-500 hover:transition-colors"
+        {character ? (
+          <div>
+            <h1
+              role={"heading"}
+              className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 dark:text-white md:text-5xl lg:text-6xl"
             >
-              {character?.location.name}
-            </Link>
-            <p className="text-gray-400">First seen in:</p>
-            {character && (
+              <span className="text-transparent bg-clip-text bg-gradient-to-bl from-purple-600 to-blue-500">
+                {character.name}
+              </span>
+            </h1>
+
+            <div className="flex items-center mb-2">
+              {character && <ImacIcons status={character.status} />}
+              <span className="font-medium text-gray-100">{`${character.status} - ${character.species}`}</span>
+            </div>
+
+            <div className="font-normal text-lg">
+              <p className="text-gray-400">Last known location:</p>
               <Link
-                to={`/episode/${episode?.id}`}
-                className="text-gray-100 hover:text-yellow-500 hover:transition-colors"
+                to={`/location/${location?.id}`}
+                className="text-gray-100 pb-2 hover:text-yellow-500 hover:transition-colors"
               >
-                {episode?.name}
+                {character?.location.name}
               </Link>
-            )}
+              <p className="text-gray-400">First seen in:</p>
+              {character && (
+                <Link
+                  to={`/episode/${episode?.id}`}
+                  className="text-gray-100 hover:text-yellow-500 hover:transition-colors"
+                >
+                  {episode?.name}
+                </Link>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <ErrorMessage error={error} />
+        )}
       </div>
     </div>
   );

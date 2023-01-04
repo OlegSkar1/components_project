@@ -24,18 +24,22 @@ export const useFetchCharPage = (): CharPage => {
   useEffect(() => {
     const fetchChar = async () => {
       try {
+        setError("");
         const charData = await getCharacter(Number(id));
-        setCharacter(charData.data);
 
-        const regExp = /(\d+$)/gs;
-        const episodeId = charData.data.episode[0].match(regExp)?.join();
+        if (charData.status === 200) {
+          setCharacter(charData.data);
 
-        const getFirstEpisode = await getEpisode(Number(episodeId));
-        setEpisode(getFirstEpisode.data);
+          const regExp = /(\d+$)/gs;
+          const episodeId = charData.data.episode[0].match(regExp)?.join();
 
-        const locationId = charData.data.location.url.match(regExp);
-        const getCurrLocation = await getLocation(Number(locationId));
-        setLocation(getCurrLocation.data);
+          const getFirstEpisode = await getEpisode(Number(episodeId));
+          setEpisode(getFirstEpisode.data);
+
+          const locationId = charData.data.location.url.match(regExp);
+          const getCurrLocation = await getLocation(Number(locationId));
+          setLocation(getCurrLocation.data);
+        } else throw new Error("Invalid character");
 
         setisLoading(false);
       } catch (error) {

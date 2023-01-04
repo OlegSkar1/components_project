@@ -10,10 +10,12 @@ export default function SearchBar() {
   const queryName = searchParams.get("name") || "";
   const [searchName, setSearchName] = useState(queryName);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [search, setSearch] = useLocalStorage(queryName, "search");
 
   useEffect(() => {
     setName(queryName);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = () => {

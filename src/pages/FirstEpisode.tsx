@@ -43,10 +43,14 @@ export const FirstEpisode: React.FC = () => {
         </div>
       )}
       <ErrorMessage error={error} />
-      <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none  md:text-5xl lg:text-6xl  bg-gradient-to-bl from-purple-600 to-blue-500 text-transparent bg-clip-text">
-        {episode?.name}
-      </h1>
-      <p className="mb-4 text-2xl font-bold text-gray-100 mb:text-3xl lg:text-4xl">{`${episode?.episode} - ${episode?.air_date}`}</p>
+      {episode && (
+        <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none  md:text-5xl lg:text-6xl  bg-gradient-to-bl from-purple-600 to-blue-500 text-transparent bg-clip-text">
+          {episode.name}
+        </h1>
+      )}
+      {episode && (
+        <p className="mb-4 text-2xl font-bold text-gray-100 mb:text-3xl lg:text-4xl">{`${episode.episode} - ${episode.air_date}`}</p>
+      )}
 
       <GoBackButton navigate={navigate} />
 

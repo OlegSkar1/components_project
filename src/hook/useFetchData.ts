@@ -20,7 +20,6 @@ function useFetchData({
     getCharactersError,
     fetchCharacters,
     setGender,
-    setName,
     setStatus,
   } = useActions();
 
@@ -44,6 +43,7 @@ function useFetchData({
   useEffect(() => {
     setGender(queryGender);
     setStatus(queryStatus);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -143,6 +143,7 @@ function useFetchData({
     const fetchCurrPageData = async () => {
       try {
         fetchCharacters();
+        getCharactersError("");
 
         if (queryName || queryGender || queryStatus) {
           const filtredResponse = await fetchFiltredData();
@@ -154,7 +155,6 @@ function useFetchData({
           }
         } else {
           const response = await getPage();
-          console.log("test");
           response && getCharactersSuccess(response);
         }
       } catch (error) {
@@ -163,6 +163,7 @@ function useFetchData({
       }
     };
     fetchCurrPageData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtredCount, numOfCharacters, page, name, gender, status]);
   return [error, loading, characters];
 }

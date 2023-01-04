@@ -22,9 +22,11 @@ export const UseCurrLocation = (): CurrLocation => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setError("");
         const fetch = await getLocation(Number(id));
-        setCharLocation(fetch.data);
-
+        if (fetch.status === 200) {
+          setCharLocation(fetch.data);
+        } else throw new Error("Location not found");
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
@@ -38,6 +40,7 @@ export const UseCurrLocation = (): CurrLocation => {
   useEffect(() => {
     const fetchChars = async () => {
       try {
+        setError("");
         const regExp = /(\d+$)/gs;
 
         if (charLocation) {
@@ -47,10 +50,14 @@ export const UseCurrLocation = (): CurrLocation => {
           });
 
           setCharactersIds(charIds);
+          if (charIds.length === 0) {
+            throw new Error("No characters found");
+          }
         }
       } catch (error) {
         setIsLoading(false);
         const e = error as Error;
+        console.log(e);
         setError(e.message);
       }
     };

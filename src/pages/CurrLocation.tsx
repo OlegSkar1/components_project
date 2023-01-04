@@ -12,14 +12,20 @@ export const CurrLocation: React.FC = () => {
     UseCurrLocation();
 
   const [loading, setLoading] = useState(true);
-  const [characters, setCharacters] = useState<Character[]>([]);
+  const [characters, setCharacters] = useState<Character[] | Character>([]);
   const [charError, setCharError] = useState("");
 
   useEffect(() => {
     const fetchChars = async () => {
       try {
-        const fetch = await getCharacter(charactersIds);
-        setCharacters(fetch.data);
+        if (charactersIds.length > 1) {
+          const fetch = await getCharacter(charactersIds);
+          setCharacters(fetch.data);
+        } else {
+          const fetch = await getCharacter(charactersIds);
+          setCharacters(fetch.data);
+        }
+
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -43,26 +49,34 @@ export const CurrLocation: React.FC = () => {
         </div>
       )}
       <ErrorMessage error={error} />
-      <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none  md:text-5xl lg:text-6xl bg-gradient-to-bl from-purple-600 to-blue-500 text-transparent bg-clip-text">
-        {charLocation?.name}
-      </h1>
-      <div className="mb-4">
-        <span className=" text-xl text-gray-100">type:</span>{" "}
-        <span className="text-gray-100 font-light text-xl">
-          {charLocation?.type}
-        </span>
-        <span className="text-xl text-gray-100 ml-10">dimension:</span>{" "}
-        <span className="text-gray-100 font-light text-xl">
-          {charLocation?.dimension}
-        </span>
-      </div>
+      {charLocation && (
+        <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none  md:text-5xl lg:text-6xl bg-gradient-to-bl from-purple-600 to-blue-500 text-transparent bg-clip-text">
+          {charLocation?.name}
+        </h1>
+      )}
+      {charLocation && (
+        <div className="mb-4">
+          <span className=" text-xl text-gray-100">type:</span>{" "}
+          <span className="text-gray-100 font-light text-xl">
+            {charLocation?.type}
+          </span>
+          <span className="text-xl text-gray-100 ml-10">dimension:</span>{" "}
+          <span className="text-gray-100 font-light text-xl">
+            {charLocation?.dimension}
+          </span>
+        </div>
+      )}
 
       <GoBackButton navigate={navigate} />
       <ErrorMessage error={charError} />
       <div className="flex flex-wrap justify-center gap-3 mt-4 mb-4">
-        {characters.map((character) => (
-          <CharacterCard character={character} key={character.id} />
-        ))}
+        {characters instanceof Array ? (
+          characters.map((character) => (
+            <CharacterCard character={character} key={character.id} />
+          ))
+        ) : (
+          <CharacterCard character={characters} />
+        )}
       </div>
     </div>
   );

@@ -28,8 +28,13 @@ export const useFetchFirstEpisode = (): FetchEpisode => {
   useEffect(() => {
     const fetchEpisode = async () => {
       try {
+        setError("");
         const fetch = await getEpisode(Number(id));
-        setEpisode(fetch.data);
+
+        if (fetch.status === 200) {
+          setEpisode(fetch.data);
+        } else throw new Error("Episode not found");
+
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);

@@ -1,4 +1,3 @@
-import actionCreators from "store/action-creators";
 import {
   CharactersAction,
   CharactersState,

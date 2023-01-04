@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { Pagination } from "@mui/material";
-import { useMyContext } from "hook/useMyContext";
-import { reducerActionCreators } from "reducer/action-creators";
 import { useTypedSelector } from "hook/useTypedSelector";
 import { useActions } from "hook/useActions";
 
@@ -38,6 +36,7 @@ function MyPagination({ numOfCharacters }: Props) {
     if (countPages) {
       getCount(countPages);
     } else getCount(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtredCount, gender, info, name, numOfCharacters, status]);
 
   return (
