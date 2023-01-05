@@ -57,7 +57,6 @@ export const UseCurrLocation = (): CurrLocation => {
       } catch (error) {
         setIsLoading(false);
         const e = error as Error;
-        console.log(e);
         setError(e.message);
       }
     };

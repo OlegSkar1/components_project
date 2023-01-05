@@ -3,8 +3,16 @@ import { getCharacters } from "rickmortyapi";
 import { Character } from "rickmortyapi/dist/interfaces";
 import _ from "lodash";
 import { useSearchParams } from "react-router-dom";
-import { useActions } from "./useActions";
-import { useTypedSelector } from "./useTypedSelector";
+import { useAppDispatch, useAppSelector } from "./useRtkHook";
+import {
+  fetchChars,
+  getInfo,
+  setError,
+  setFiltredCount,
+  setGender,
+  setLoading,
+  setStatus,
+} from "store/reducers/charactersSlice";
 
 interface Props {
   numOfCharacters: number;
@@ -13,15 +21,7 @@ interface Props {
 function useFetchData({
   numOfCharacters,
 }: Props): [string | null, boolean, Character[]] {
-  const {
-    getInfo,
-    getFiltredCount,
-    getCharactersSuccess,
-    getCharactersError,
-    fetchCharacters,
-    setGender,
-    setStatus,
-  } = useActions();
+  const dispatch = useAppDispatch();
 
   const {
     error,
@@ -32,7 +32,7 @@ function useFetchData({
     page,
     status,
     characters,
-  } = useTypedSelector((state) => state.characters);
+  } = useAppSelector((state) => state.characters);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -41,8 +41,8 @@ function useFetchData({
   const queryStatus = searchParams.get("status") || "";
 
   useEffect(() => {
-    setGender(queryGender);
-    setStatus(queryStatus);
+    dispatch(setGender(queryGender));
+    dispatch(setStatus(queryStatus));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -82,14 +82,14 @@ function useFetchData({
         }
 
         if (filtredCount !== infoData.count) {
-          getFiltredCount(infoData.count);
+          dispatch(setFiltredCount(infoData.count));
         }
 
         const resultChunks = _.chunk(chunks, numOfCharacters);
 
         return resultChunks;
       } else if (filtredData.status === 404) {
-        getFiltredCount(0);
+        dispatch(setFiltredCount(0));
       }
     };
 
@@ -113,8 +113,7 @@ function useFetchData({
         const dataInfo = responseAllChar.data.info;
 
         dataResults && chunks.push(...dataResults);
-
-        getInfo(dataInfo);
+        dataInfo && dispatch(getInfo(dataInfo));
 
         if (dataResults && dataInfo) {
           for (let i = 2; i <= dataInfo.pages; i++) {
@@ -142,29 +141,41 @@ function useFetchData({
 
     const fetchCurrPageData = async () => {
       try {
-        fetchCharacters();
-        getCharactersError("");
+        dispatch(setError(null));
+        dispatch(setLoading(true));
 
         if (queryName || queryGender || queryStatus) {
           const filtredResponse = await fetchFiltredData();
 
-          filtredResponse && getCharactersSuccess(filtredResponse);
+          filtredResponse && dispatch(fetchChars(filtredResponse));
 
           if (!filtredResponse) {
-            getCharactersError("Ошибка, персонаж не найден!!!");
+            dispatch(setError("Ошибка, персонаж не найден!!!"));
           }
         } else {
           const response = await getPage();
-          response && getCharactersSuccess(response);
+          response && dispatch(fetchChars(response));
         }
+        dispatch(setLoading(false));
       } catch (error) {
         const e = error as Error;
-        getCharactersError(e.message);
+        dispatch(setError(e.message));
       }
     };
     fetchCurrPageData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filtredCount, numOfCharacters, page, name, gender, status]);
+  }, [
+    filtredCount,
+    numOfCharacters,
+    page,
+    name,
+    gender,
+    status,
+    setSearchParams,
+    dispatch,
+    queryName,
+    queryGender,
+    queryStatus,
+  ]);
   return [error, loading, characters];
 }
 

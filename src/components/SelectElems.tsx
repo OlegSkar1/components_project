@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useActions } from "hook/useActions";
+import { useAppDispatch } from "hook/useRtkHook";
+import { setPage } from "store/reducers/charactersSlice";
 
 interface Props {
   changeNumOfCharacters: (value: number) => void;
@@ -10,7 +11,7 @@ interface Props {
 
 export default function SelectElems({ changeNumOfCharacters }: Props) {
   const [elems, setElems] = useState("20");
-  const { setPage } = useActions();
+  const dispatch = useAppDispatch();
 
   const handleChange = (event: SelectChangeEvent) => {
     setElems(event.target.value);
@@ -18,7 +19,7 @@ export default function SelectElems({ changeNumOfCharacters }: Props) {
 
   useEffect(() => {
     changeNumOfCharacters(Number(elems));
-    setPage(1);
+    dispatch(setPage(1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elems]);
 

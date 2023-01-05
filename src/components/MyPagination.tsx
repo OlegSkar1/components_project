@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Pagination } from "@mui/material";
-import { useTypedSelector } from "hook/useTypedSelector";
-import { useActions } from "hook/useActions";
+import { useAppSelector, useAppDispatch } from "hook/useRtkHook";
+import { setCount, setPage } from "store/reducers/charactersSlice";
 
 export enum numbersEnumCharacters {
   FIVE = 5,
@@ -16,16 +16,14 @@ interface Props {
 
 function MyPagination({ numOfCharacters }: Props) {
   const { name, gender, status, filtredCount, info, count, page } =
-    useTypedSelector((state) => state.characters);
+    useAppSelector((state) => state.characters);
 
-  const { getCount, setPage } = useActions();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getCountPages = () => {
       if (name || gender || status) {
-        if (filtredCount > 0) {
-          return Math.ceil(filtredCount / numOfCharacters);
-        }
+        return Math.ceil(filtredCount / numOfCharacters);
       } else {
         return info && Math.ceil(info.count / numOfCharacters);
       }
@@ -34,16 +32,15 @@ function MyPagination({ numOfCharacters }: Props) {
     const countPages = getCountPages();
 
     if (countPages) {
-      getCount(countPages);
-    } else getCount(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filtredCount, gender, info, name, numOfCharacters, status]);
+      dispatch(setCount(countPages));
+    } else dispatch(setCount(0));
+  }, [dispatch, filtredCount, gender, info, name, numOfCharacters, status]);
 
   return (
     <>
       {count > 1 && (
         <Pagination
-          onChange={(_, num) => setPage(num)}
+          onChange={(_, num) => dispatch(setPage(num))}
           count={count}
           page={page}
           color={"primary"}

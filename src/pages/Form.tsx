@@ -2,8 +2,8 @@ import React, { useRef, useEffect } from "react";
 import Card from "../components/Card";
 import SuccessAlert from "../components/SuccessAlert";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useTypedSelector } from "hook/useTypedSelector";
-import { useActions } from "hook/useActions";
+import { useAppDispatch, useAppSelector } from "hook/useRtkHook";
+import { addProduct } from "../store/reducers/productsSlice";
 
 const fileReader = new FileReader();
 
@@ -72,9 +72,9 @@ function Form() {
     },
   });
 
-  const { addProduct } = useActions();
+  const dispatch = useAppDispatch();
 
-  const { products } = useTypedSelector((state) => state.products);
+  const { products } = useAppSelector((state) => state.products);
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     const id = Date.now();
@@ -82,14 +82,16 @@ function Form() {
     fileReader.onloadend = () => {
       const imageSrc = fileReader.result as string;
 
-      addProduct({
-        id,
-        title: data.title,
-        price: Number(data.price),
-        description: data.description,
-        category: data.category,
-        image: imageSrc,
-      });
+      dispatch(
+        addProduct({
+          id,
+          title: data.title,
+          price: Number(data.price),
+          description: data.description,
+          category: data.category,
+          image: imageSrc,
+        })
+      );
     };
 
     fileReader.readAsDataURL(imageRef.current?.files?.item(0) as File);

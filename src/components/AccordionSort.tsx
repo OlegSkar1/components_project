@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useTypedSelector } from "hook/useTypedSelector";
-import { useActions } from "hook/useActions";
+import { useAppSelector, useAppDispatch } from "hook/useRtkHook";
+import { setGender, setPage, setStatus } from "store/reducers/charactersSlice";
 
 enum statusEnum {
   ALIVE = "Alive",
@@ -25,9 +25,8 @@ enum genderEnum {
 }
 
 function AccordionSort() {
-  const { status, gender } = useTypedSelector((state) => state.characters);
-
-  const { setPage, setStatus, setGender } = useActions();
+  const { status, gender } = useAppSelector((state) => state.characters);
+  const dispatch = useAppDispatch();
 
   const [statusValue, setStatusValue] = useState("");
   const [genderValue, setGenderValue] = useState("");
@@ -49,8 +48,8 @@ function AccordionSort() {
         case statusEnum.DEAD:
           {
             setStatusValue(e.target.value);
-            setPage(1);
-            setStatus(e.target.value);
+            dispatch(setPage(1));
+            dispatch(setStatus(e.target.value));
           }
           break;
         case genderEnum.MALE:
@@ -58,22 +57,22 @@ function AccordionSort() {
         case genderEnum.GENDERLESS:
           {
             setGenderValue(e.target.value);
-            setPage(1);
-            setGender(e.target.value);
+            dispatch(setPage(1));
+            dispatch(setGender(e.target.value));
           }
           break;
       }
 
       if (e.target.id === "statusUnknown") {
         setStatusValue(e.target.value);
-        setPage(1);
-        setStatus(e.target.value);
+        dispatch(setPage(1));
+        dispatch(setStatus(e.target.value));
       }
 
       if (e.target.id === "genderUnknown") {
         setGenderValue(e.target.value);
-        setPage(1);
-        setGender(e.target.value);
+        dispatch(setPage(1));
+        dispatch(setGender(e.target.value));
       }
     }
   };

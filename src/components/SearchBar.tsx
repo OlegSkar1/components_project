@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import useLocalStorage from "hook/useLocalStorage";
 import { useSearchParams } from "react-router-dom";
-import { useActions } from "hook/useActions";
+import { useAppDispatch } from "hook/useRtkHook";
+import { setName, setPage } from "store/reducers/charactersSlice";
 
 export default function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { setName, setPage } = useActions();
+  const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryName = searchParams.get("name") || "";
   const [searchName, setSearchName] = useState(queryName);
@@ -14,7 +15,7 @@ export default function SearchBar() {
   const [search, setSearch] = useLocalStorage(queryName, "search");
 
   useEffect(() => {
-    setName(queryName);
+    dispatch(setName(queryName));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -29,8 +30,8 @@ export default function SearchBar() {
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (inputRef.current) {
-      setPage(1);
-      setName(searchName);
+      dispatch(setPage(1));
+      dispatch(setName(searchName));
       setSearchParams((prev) => ({
         ...prev,
         name: searchName,

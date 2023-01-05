@@ -1,9 +1,13 @@
-import { legacy_createStore as createStore, applyMiddleware } from "redux";
-import { composeWithDevTools } from "@redux-devtools/extension";
-import thunk from "redux-thunk";
-import { rootReducer } from "./reducers";
+import { configureStore } from "@reduxjs/toolkit";
+import charactersReducer from "./reducers/charactersSlice";
+import productsReducer from "./reducers/productsSlice";
 
-export const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(thunk))
-);
+export const store = configureStore({
+  reducer: {
+    products: productsReducer,
+    characters: charactersReducer,
+  },
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

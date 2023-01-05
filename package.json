@@ -10,6 +10,7 @@
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.13",
+    "@reduxjs/toolkit": "^1.9.1",
     "@types/babel__core": "^7.1.20",
     "@types/node": "^16.11.60",
     "@types/react": "^18.0.21",
@@ -22,8 +23,6 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",
-    "redux": "^4.2.0",
-    "redux-thunk": "^2.4.2",
     "rickmortyapi": "^1.0.0",
     "serve": "^14.0.1",
     "typescript": "^4.8.4",
@@ -54,9 +53,7 @@
     ]
   },
   "devDependencies": {
-    "@redux-devtools/extension": "^3.2.3",
     "@types/lodash": "^4.14.191",
-    "@types/react-redux": "^7.1.25",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
     "assert": "^2.0.0",
